@@ -1,0 +1,14 @@
+## Interface: 90001
+## Title: Reagent Professions
+## Author: Hotel2Oscar
+## Version: 0.0
+## Notes: Shows which professions use the reagent in the tooltip
+## X-Category: Tradeskill
+## X-Embeds: Ace3
+## DefaultState: Enabled
+## LoadOnDemand: 0
+## SavedVariables: ReagentProfessionsDB
+
+embeds.xml
+
+Core.lua
