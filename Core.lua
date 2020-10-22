@@ -14,17 +14,18 @@ end
 
 function ReagentProfessions:OnEnable()
     -- Called when the addon is enabled
-    self:Print("ReagentProfessions enabled!")
+    self:Debug("ReagentProfessions enabled!")
 
     -- self:RegisterEvent("TRADE_SKILL_SHOW")
     self:RegisterEvent("TRADE_SKILL_LIST_UPDATE")
 
     self:RawHookScript(GameTooltip, "OnTooltipSetItem", "AttachTooltip")
+    self:RawHookScript(ItemRefTooltip, "OnTooltipSetItem", "AttachTooltip")
 end
 
 function ReagentProfessions:OnDisable()
     -- Called when the addon is disabled
-    self:Print("ReagentProfessions disabled!")
+    self:Debug("ReagentProfessions disabled!")
 end
 
 local function dump(o)
@@ -41,12 +42,12 @@ local function dump(o)
  end
 
 function ReagentProfessions:TRADE_SKILL_SHOW()
-    self:Print("ReagentProfessions trade skill show fired!")
+    self:Debug("ReagentProfessions trade skill show fired!")
     self:ProcessRecipes()
 end
 
 function ReagentProfessions:TRADE_SKILL_LIST_UPDATE()
-    self:Print("ReagentProfessions trade skill list update fired!")
+    self:Debug("ReagentProfessions trade skill list update fired!")
     self:ProcessRecipes()
 end
 
@@ -77,16 +78,20 @@ function ReagentProfessions:ProcessRecipes()
         return 
     end
 
+    local db = self.db.global
+
+    for reagent, _ in pairs(db) do
+        db[reagent][profession] = false
+    end
+
     local recipeIDs = C_TradeSkillUI.GetAllRecipeIDs()
 
     self:Debug(#recipeIDs)
 
-    local db = self.db.global
-
     for key, recipeID in pairs(recipeIDs) do
         local recipeInfo = C_TradeSkillUI.GetRecipeInfo(recipeID)
 
-        self:Debug("processing " .. recipeID .. " " .. recipeInfo.name)
+        -- self:Debug("processing " .. recipeID .. " " .. recipeInfo.name)
 
         for reagentIndex = 1, C_TradeSkillUI.GetRecipeNumReagents(recipeID) do
             local reagentName = C_TradeSkillUI.GetRecipeReagentInfo(recipeID, reagentIndex)
@@ -98,20 +103,24 @@ function ReagentProfessions:ProcessRecipes()
                     db[reagentName][profession] = true
                 end
             else
-                self:Debug("no reagent name for " .. recipeID .. " " .. reagentIndex)
+                self:Debug("no reagent name for " .. recipeInfo.name .. " " .. reagentIndex)
             end
         end
     end
 end
 
 function ReagentProfessions:AttachTooltip(tooltip, ...)
+    if IsShiftKeyDown() then return end
+
     itemName, _ = tooltip:GetItem();
 
     local db = self.db.global
 
     if not db[itemName] then return end
 
-    for profession, _ in pairs(db[itemName]) do
-        tooltip:AddLine(profession, 0, 1, 1)
+    for profession, needed in pairs(db[itemName]) do
+        if needed then
+            tooltip:AddLine(profession, 0, 1, 1)
+        end
     end
 end
