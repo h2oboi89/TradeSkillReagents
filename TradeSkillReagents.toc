@@ -1,13 +1,13 @@
 ## Interface: 90001
-## Title: Reagent Professions
+## Title: Trade Skill Reagents
 ## Author: Hotel2Oscar
 ## Version: 0.0
-## Notes: Shows which professions use the reagent in the tooltip
+## Notes: Shows which trade skills use the reagent in the tooltip
 ## X-Category: Tradeskill
 ## X-Embeds: Ace3
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
-## SavedVariables: ReagentProfessionsDB
+## SavedVariables: TradeSkillReagentsDB
 
 embeds.xml
 

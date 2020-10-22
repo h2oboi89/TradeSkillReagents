@@ -1,5 +1,4 @@
--- TODO: Use "AceComm-3.0" as mixin to allow instances to communicate between clients
-ReagentProfessions = LibStub("AceAddon-3.0"):NewAddon("ReagentProfessions", "AceConsole-3.0", "AceEvent-3.0", "AceHook-3.0")
+TradeSkillReagents = LibStub("AceAddon-3.0"):NewAddon("TradeSkillReagents", "AceConsole-3.0", "AceEvent-3.0", "AceHook-3.0")
 
 local debug = true
 
@@ -19,15 +18,15 @@ local function dump(o)
     end
 end
 
-function ReagentProfessions:Debug(message)
+function TradeSkillReagents:Debug(message)
     if debug then self:Print(message) end
 end
 
-function ReagentProfessions:OnInitialize()
-    self.db = LibStub("AceDB-3.0"):New("ReagentProfessionsDB")
+function TradeSkillReagents:OnInitialize()
+    self.db = LibStub("AceDB-3.0"):New("TradeSkillReagentsDB")
 end
 
-function ReagentProfessions:OnEnable()
+function TradeSkillReagents:OnEnable()
     -- NOTE: this fires twice when window is opened
     self:RegisterEvent("TRADE_SKILL_LIST_UPDATE")
     self:RegisterEvent("PLAYER_LOGOUT")
@@ -36,13 +35,13 @@ function ReagentProfessions:OnEnable()
     self:RawHookScript(ItemRefTooltip, "OnTooltipSetItem", "AttachTooltip")
 end
 
-function ReagentProfessions:OnDisable() end
+function TradeSkillReagents:OnDisable() end
 
-function ReagentProfessions:PLAYER_LOGOUT()
+function TradeSkillReagents:PLAYER_LOGOUT()
     self:PruneDB()    
 end
 
-function ReagentProfessions:PruneDB()
+function TradeSkillReagents:PruneDB()
     local db = self.db.global.reagents
 
     for reagent, professions in pairs(db) do
@@ -62,11 +61,11 @@ function ReagentProfessions:PruneDB()
     end
 end
 
-function ReagentProfessions:TRADE_SKILL_LIST_UPDATE()
+function TradeSkillReagents:TRADE_SKILL_LIST_UPDATE()
     self:ProcessRecipes()
 end
 
-function ReagentProfessions:ProcessRecipes()
+function TradeSkillReagents:ProcessRecipes()
     local _, skillLineDisplayName, _, _, _, _, parentSkillLineDisplayName = C_TradeSkillUI.GetTradeSkillLine()
 
     local profession = "Unknown"
@@ -114,14 +113,14 @@ function ReagentProfessions:ProcessRecipes()
     end
 end
 
-function ReagentProfessions:AttachTooltip(tooltip, ...)
+function TradeSkillReagents:AttachTooltip(tooltip, ...)
     if IsShiftKeyDown() then return end
 
     itemName, _ = tooltip:GetItem();
 
     local db = self.db.global.reagents
 
-    if not db[itemName] then return end
+    if not db or not db[itemName] then return end
 
     for profession, needed in pairs(db[itemName]) do
         if needed then
