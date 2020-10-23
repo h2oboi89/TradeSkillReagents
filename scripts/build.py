@@ -3,11 +3,6 @@ import re
 import shutil
 import sys
 
-def exists(directory, name):
-    if not os.path.exists(directory) and not os.path.isdir(directory):
-        print(f"{name} directory does not exist or is not a directory")
-        exit(1)
-
 def files(directory):
     return (f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f)))
 
@@ -40,19 +35,17 @@ def main(args):
     src_directory = args[1]
     release_directory = args[2]
     project_name = args[3]
-    project_folder = os.path.join(release_directory, project_name)
+    
+    project_directory = os.path.join(release_directory, project_name)
 
-    exists(src_directory, "source")
-    exists(release_directory, "release")
+    os.mkdir(project_directory)
 
-    os.mkdir(project_folder)
-
-    copy_files(src_directory, project_folder)
+    copy_files(src_directory, project_directory)
 
     libs = get_libs(src_directory)
 
     for lib in libs:
-        copy_files(os.path.join(src_directory, lib), os.path.join(project_folder, lib))
+        copy_files(os.path.join(src_directory, lib), os.path.join(project_directory, lib))
 
 if __name__ == '__main__':
     main(sys.argv)

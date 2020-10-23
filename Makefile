@@ -8,7 +8,6 @@ PYTHON := py -3
 SOURCE_DIR := .\src
 RELEASE_DIR := .\Release
 PACKAGE_DIR := .\artifacts
-TEST_DIR := C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns\TradeSkillReagents
 
 PROJECT_NAME := TradeSkillReagents
 
@@ -40,3 +39,8 @@ clean:
 build: clean
 	$(call make_dir,$(RELEASE_DIR))
 	$(PYTHON) .\scripts\build.py $(SOURCE_DIR) $(RELEASE_DIR) $(PROJECT_NAME)
+
+.PHONY: test
+test: build
+	$(PYTHON) .\scripts\deploy.py $(RELEASE_DIR) $(PROJECT_NAME)
+	
