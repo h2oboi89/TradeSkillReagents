@@ -41,7 +41,7 @@ function TradeSkillReagents:ProcessRecipes()
         return 
     end
 
-    self:Debug("Scanning " .. profession)
+    self:Print("Scanning " .. profession)
 
     local db = self.db.global
 
@@ -90,7 +90,7 @@ function TradeSkillReagents:ProcessRecipes()
         recipeCount = recipeCount + 1
     end
 
-    self:Debug("Done scanning " .. profession .. " ( " .. recipeCount .. " recipes | " .. reagentCount .. " reagents )")
+    self:Print("Done scanning " .. profession .. " ( " .. recipeCount .. " recipes | " .. reagentCount .. " reagents )")
 end
 
 function TradeSkillReagents:AttachTooltip(tooltip, ...)
@@ -102,11 +102,19 @@ function TradeSkillReagents:AttachTooltip(tooltip, ...)
 
     if not db or not db[itemName] then return end
 
+    local lines = {}
+
     for profession, _ in pairs(db[itemName]) do
         for category, needed in pairs(db[itemName][profession]) do
             if needed then
-                tooltip:AddLine(profession .. " - " .. category, 0, 1, 1)
+                table.insert(lines, profession .. " - " .. category)
             end
         end
+    end
+
+    table.sort(lines)
+
+    for _, line in ipairs(lines) do
+        tooltip:AddLine(line , 0, 1, 1)
     end
 end
