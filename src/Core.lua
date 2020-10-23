@@ -11,7 +11,7 @@ function TradeSkillReagents:OnInitialize()
 end
 
 function TradeSkillReagents:OnEnable()
-    -- NOTE: this fires twice when window is opened
+    -- NOTE: this fires twice when window is opened for first time
     self:RegisterEvent("TRADE_SKILL_LIST_UPDATE")
 
     self:RawHookScript(GameTooltip, "OnTooltipSetItem", "AttachTooltip")
@@ -41,7 +41,15 @@ function TradeSkillReagents:ProcessRecipes()
         return 
     end
 
+    self:Debug("Scanning " .. profession)
+
     local db = self.db.global
+
+    for reagent, _ in pairs(db) do
+        if db[reagent][profession] then
+            db[reagent][profession] = nil
+        end
+    end
     
     local categories = {}
     
@@ -54,6 +62,8 @@ function TradeSkillReagents:ProcessRecipes()
     db = db.reagents
 
     local recipeIDs = C_TradeSkillUI.GetAllRecipeIDs()
+    local recipeCount = 0
+    local reagentCount = 0
 
     for key, recipeID in pairs(recipeIDs) do
         local recipeInfo = C_TradeSkillUI.GetRecipeInfo(recipeID)
@@ -65,34 +75,38 @@ function TradeSkillReagents:ProcessRecipes()
             category = categories[categoryInfo.categoryID]
         end
 
-        category = profession .. " - " .. category
-
         for reagentIndex = 1, C_TradeSkillUI.GetRecipeNumReagents(recipeID) do
             local reagentName = C_TradeSkillUI.GetRecipeReagentInfo(recipeID, reagentIndex)
             
             if reagentName then 
                 db[reagentName] = db[reagentName] or {}
+                db[reagentName][profession] = db[reagentName][profession] or {}
+                db[reagentName][profession][category] = true
                 
-                if not db[reagentName][category] then
-                    db[reagentName][category] = true
-                end
+                reagentCount = reagentCount + 1
             end
         end
+
+        recipeCount = recipeCount + 1
     end
+
+    self:Debug("Done scanning " .. profession .. " ( " .. recipeCount .. " recipes | " .. reagentCount .. " reagents )")
 end
 
 function TradeSkillReagents:AttachTooltip(tooltip, ...)
     if IsShiftKeyDown() then return end
 
-    itemName, _ = tooltip:GetItem();
+    local itemName, _ = tooltip:GetItem();
 
     local db = self.db.global.reagents
 
     if not db or not db[itemName] then return end
 
-    for profession, needed in pairs(db[itemName]) do
-        if needed then
-            tooltip:AddLine(profession, 0, 1, 1)
+    for profession, _ in pairs(db[itemName]) do
+        for category, needed in pairs(db[itemName][profession]) do
+            if needed then
+                tooltip:AddLine(profession .. " - " .. category, 0, 1, 1)
+            end
         end
     end
 end
