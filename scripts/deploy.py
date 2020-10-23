@@ -1,4 +1,5 @@
 from distutils.dir_util import copy_tree
+from shutil import rmtree
 import os
 import sys
 
@@ -17,7 +18,7 @@ def main(args):
     print(dst_directory)
 
     if os.path.exists(dst_directory):
-        os.rmdir(dst_directory)
+        rmtree(dst_directory)
 
     os.mkdir(dst_directory)
 
