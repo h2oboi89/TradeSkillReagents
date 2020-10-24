@@ -4,7 +4,13 @@ local defaults = {
     global = {
         version = false,
         options = {
-            debug = false
+            debug = false,
+            tooltip = {
+                useSingleColor = true,
+                -- single color
+                -- trade skills group
+                    -- trade skill colors
+            }
         },
         reagents = {}
     }
@@ -15,6 +21,21 @@ local options = {
     type = "group",
     handler = TradeSkillReagents,
     args = {
+        colors = {
+            name = "Colors",
+            type = "group",
+            inline = true,
+            args = {
+                useSingleColor = {
+                    name = "Single color",
+                    desc = "One color for trade skills in tooltip",
+                    descStyle = "inline",
+                    type = "toggle",
+                    set = "SetOptionsSingleColor",
+                    get = "GetOptionsSingleColor"
+                }
+            }
+        },
         debug = {
             name = "Debug",
             desc = "Enables debug print statements",
@@ -230,5 +251,13 @@ end
 
 function TradeSkillReagents:GetOptionsDebug(info)
     return self.db.options.debug
+end
+
+function TradeSkillReagents:SetOptionsSingleColor(info, value)
+    self.db.options.tooltip.useSingleColor = value
+end
+
+function TradeSkillReagents:GetOptionsSingleColor(info)
+    return self.db.options.tooltip.useSingleColor
 end
 
