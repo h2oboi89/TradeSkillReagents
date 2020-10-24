@@ -1,4 +1,4 @@
-TradeSkillReagents = LibStub("AceAddon-3.0"):NewAddon("TradeSkillReagents", "AceConsole-3.0", "AceEvent-3.0", "AceHook-3.0")
+TradeSkillReagents = LibStub("AceAddon-3.0"):NewAddon("TradeSkillReagents", "AceConsole-3.0", "AceEvent-3.0", "AceHook-3.0", "AceTimer-3.0")
 
 local debug = false
 
@@ -11,7 +11,6 @@ function TradeSkillReagents:OnInitialize()
 end
 
 function TradeSkillReagents:OnEnable()
-    -- NOTE: this fires twice when window is opened for first time
     self:RegisterEvent("TRADE_SKILL_LIST_UPDATE")
 
     self:RawHookScript(GameTooltip, "OnTooltipSetItem", "AttachTooltip")
@@ -19,10 +18,14 @@ function TradeSkillReagents:OnEnable()
 end
 
 function TradeSkillReagents:TRADE_SKILL_LIST_UPDATE()
-    self:ProcessRecipes()
+    if self.ScanTimer then return end
+
+    self.ScanTimer = self:ScheduleTimer(function () self:ProcessRecipes() end, 1)
 end
 
 function TradeSkillReagents:ProcessRecipes()
+    self.ScanTimer = nil
+
     local _, skillLineDisplayName, _, _, _, _, parentSkillLineDisplayName = C_TradeSkillUI.GetTradeSkillLine()
     
     local profession = "Unknown"
