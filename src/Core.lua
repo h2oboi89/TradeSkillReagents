@@ -10,6 +10,23 @@ local defaults = {
     }
 }
 
+local options = {
+    name = "Trade Skills Reagents",
+    type = "group",
+    handler = TradeSkillReagents,
+    args = {
+        debug = {
+            name = "Debug",
+            desc = "Enables debug print statements",
+            descStyle = "inline",
+            type = "toggle",
+            set = "SetOptionsDebug",
+            get = "GetOptionsDebug",
+            order = -1
+        }
+    }
+}
+
 local function deepcopy(orig)
     local orig_type = type(orig)
     local copy
@@ -76,7 +93,8 @@ function TradeSkillReagents:OnInitialize()
 
     self.db = self.db.global
 
-    self.db.options.debug = true
+    LibStub("AceConfig-3.0"):RegisterOptionsTable("TradeSkillReagents",  options)
+    LibStub("AceConfigDialog-3.0"):AddToBlizOptions("TradeSkillReagents", "Trade Skills Reagents")
 end
 
 function TradeSkillReagents:OnEnable()
@@ -205,3 +223,12 @@ function TradeSkillReagents:AttachTooltip(tooltip, ...)
         tooltip:AddLine(line , 0, 1, 1)
     end
 end
+
+function TradeSkillReagents:SetOptionsDebug(info, value)
+    self.db.options.debug = value
+end
+
+function TradeSkillReagents:GetOptionsDebug(info)
+    return self.db.options.debug
+end
+
