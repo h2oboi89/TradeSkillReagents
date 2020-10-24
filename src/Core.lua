@@ -7,9 +7,7 @@ local defaults = {
             debug = false,
             tooltip = {
                 useSingleColor = true,
-                -- single color
-                -- trade skills group
-                    -- trade skill colors
+                singleColor = { r = 0, g = 1, b = 1, a = 1 },
             }
         },
         reagents = {}
@@ -27,10 +25,15 @@ local options = {
             inline = true,
             args = {
                 useSingleColor = {
-                    name = "Single color",
-                    desc = "One color for trade skills in tooltip",
-                    descStyle = "inline",
+                    name = "Use single color for trades skills in tooltips",
+                    desc = "Uncheck to use different colors for each professions",
                     type = "toggle",
+                    set = "SetOptionsSingleColorToggle",
+                    get = "GetOptionsSingleColorToggle"
+                },
+                singleColor = {
+                    name = "Single color",
+                    type = "color",
                     set = "SetOptionsSingleColor",
                     get = "GetOptionsSingleColor"
                 }
@@ -240,8 +243,10 @@ function TradeSkillReagents:AttachTooltip(tooltip, ...)
 
     table.sort(lines)
 
+    local color = self.db.options.tooltip.singleColor
+
     for _, line in ipairs(lines) do
-        tooltip:AddLine(line , 0, 1, 1)
+        tooltip:AddLine(line, color.r, color.g, color.b)
     end
 end
 
@@ -253,11 +258,19 @@ function TradeSkillReagents:GetOptionsDebug(info)
     return self.db.options.debug
 end
 
-function TradeSkillReagents:SetOptionsSingleColor(info, value)
+function TradeSkillReagents:SetOptionsSingleColorToggle(info, value)
     self.db.options.tooltip.useSingleColor = value
 end
 
-function TradeSkillReagents:GetOptionsSingleColor(info)
+function TradeSkillReagents:GetOptionsSingleColorToggle(info)
     return self.db.options.tooltip.useSingleColor
 end
 
+function TradeSkillReagents:SetOptionsSingleColor(info, r, g, b, a)
+    self.db.options.tooltip.singleColor = { r = r, g = g, b = b, a = a }
+end
+
+function TradeSkillReagents:GetOptionsSingleColor(info)
+    local color = self.db.options.tooltip.singleColor
+    return color.r, color.g, color.b, color.a
+end
