@@ -170,6 +170,14 @@ function TradeSkillReagents:AddTradeSkillColorOptions()
     end
 end
 
+-- HACK to get GameTooltip:GetItem to work in TradeSkill UI for recipe reagents
+-- local GameTooltipSetRecipeReagentItem = GameTooltip.SetRecipeReagentItem
+-- function GameTooltip:SetRecipeReagentItem(...)
+--     local link = C_TradeSkillUI.GetRecipeReagentItemLink(...)
+--     if link then return self:SetHyperlink(link) end
+--     return GameTooltipSetRecipeReagentItem(self, ...)
+-- end
+
 function TradeSkillReagents:OnEnable()
     self:RegisterEvent("TRADE_SKILL_LIST_UPDATE")
 
@@ -277,10 +285,10 @@ function TradeSkillReagents:GetTooltipColor(tradeSkill)
     end
 end
 
-function TradeSkillReagents:AddTradeSkillTooltipInfo(tooltip, ...)
+function TradeSkillReagents:AddTradeSkillTooltipInfo(tooltip)
     if IsShiftKeyDown() then return end
-
-    local itemName, itemLink = tooltip:GetItem();
+    
+    local itemName, itemLink = tooltip:GetItem()
 
     if not self.db.reagents[itemName] then return end
 
