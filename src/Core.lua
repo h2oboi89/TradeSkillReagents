@@ -173,8 +173,8 @@ end
 function TradeSkillReagents:OnEnable()
     self:RegisterEvent("TRADE_SKILL_LIST_UPDATE")
 
-    self:RawHookScript(GameTooltip, "OnTooltipSetItem", "AttachTooltip")
-    self:RawHookScript(ItemRefTooltip, "OnTooltipSetItem", "AttachTooltip")
+    self:HookScript(GameTooltip, "OnToolTipSetItem", "AddTradeSkillTooltipInfo")
+    self:HookScript(ItemRefTooltip, "OnToolTipSetItem", "AddTradeSkillTooltipInfo")
 end
 
 function TradeSkillReagents:TRADE_SKILL_LIST_UPDATE()
@@ -277,10 +277,10 @@ function TradeSkillReagents:GetTooltipColor(tradeSkill)
     end
 end
 
-function TradeSkillReagents:AttachTooltip(tooltip, ...)
+function TradeSkillReagents:AddTradeSkillTooltipInfo(tooltip, ...)
     if IsShiftKeyDown() then return end
 
-    local itemName, _ = tooltip:GetItem();
+    local itemName, itemLink = tooltip:GetItem();
 
     if not self.db.reagents[itemName] then return end
 
