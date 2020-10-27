@@ -10,6 +10,7 @@ local defaults = {
         options = {
             debug = false,
             tooltip = {
+                disable = false,
                 useSingleColor = true,
                 singleColor = {r = 0, g = 1, b = 1, a = 1},
                 tradeSkills = {}
@@ -28,17 +29,20 @@ local options = {
             name = "Colors",
             type = "group",
             inline = true,
+            order = 0,
             args = {
                 useSingleColor = {
                     name = "Use single color for trade skills in tooltips",
                     desc = "Uncheck to use different colors for each trade skill",
                     type = "toggle",
+                    order = 0,
                     set = "SetOptionsSingleColorToggle",
                     get = "GetOptionsSingleColorToggle"
                 },
                 singleColor = {
                     name = "Single Color",
                     type = "color",
+                    order = 1,
                     set = "SetOptionsSingleColor",
                     get = "GetOptionsSingleColor"
                 },
@@ -52,10 +56,17 @@ local options = {
                 }
             }
         },
+        disableTooltip = {
+            name = "Disable tooltip",
+            desc = "Check to disable tooltip if Trade Skill Reagents is being used by another addon",
+            type = "toggle",
+            order = 1,
+            set = "SetOptionsDisableTooltip",
+            get = "GetOptionsDisableTooltip"
+        },
         debug = {
             name = "Debug",
             desc = "Enables debug print statements",
-            descStyle = "inline",
             type = "toggle",
             set = "SetOptionsDebug",
             get = "GetOptionsDebug",
@@ -180,10 +191,21 @@ end
 
 function TradeSkillReagents:OnEnable()
     self:RegisterEvent("TRADE_SKILL_LIST_UPDATE")
+    self:RegisterMessage("TRADE_SKILL_REAGENTS_QUERY")
 
     self:HookScript(GameTooltip, "OnToolTipSetItem", "AddTradeSkillTooltipInfo")
     self:HookScript(ItemRefTooltip, "OnToolTipSetItem",
                     "AddTradeSkillTooltipInfo")
+end
+
+function TradeSkillReagents:TRADE_SKILL_REAGENTS_QUERY(messageName, itemName)
+    local response = {itemName = itemName}
+
+    local tradeSkills = self.db.reagents[itemName]
+
+    if tradeSkills then response.tradeSkills = deepCopy(tradeSkills) end
+
+    self:SendMessage("TRADE_SKILL_REAGENTS_QUERY_RESPONSE", response)
 end
 
 function TradeSkillReagents:TRADE_SKILL_LIST_UPDATE()
@@ -287,7 +309,7 @@ function TradeSkillReagents:GetTooltipColor(tradeSkill)
 end
 
 function TradeSkillReagents:AddTradeSkillTooltipInfo(tooltip)
-    if IsShiftKeyDown() then return end
+    if IsShiftKeyDown() or self.db.options.tooltip.disable then return end
 
     local itemName, itemLink = tooltip:GetItem()
 
@@ -317,6 +339,14 @@ function TradeSkillReagents:SetOptionsDebug(info, value)
 end
 
 function TradeSkillReagents:GetOptionsDebug(info) return self.db.options.debug end
+
+function TradeSkillReagents:SetOptionsDisableTooltip(info, value)
+    self.db.options.tooltip.disable = value
+end
+
+function TradeSkillReagents:GetOptionsDisableTooltip(info)
+    return self.db.options.tooltip.disable
+end
 
 function TradeSkillReagents:SetOptionsSingleColorToggle(info, value)
     self.db.options.tooltip.useSingleColor = value
