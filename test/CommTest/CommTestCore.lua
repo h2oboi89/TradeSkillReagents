@@ -2,7 +2,7 @@ CommTest = LibStub("AceAddon-3.0"):NewAddon("CommTest", "AceConsole-3.0",
                                             "AceEvent-3.0")
 
 function CommTest:OnInitialize()
-    -- Registers `/commtest` as a slash command
+    -- Registers "/commtest" as a slash command
     self:RegisterChatCommand("commtest", "QueryItem")
 end
 
