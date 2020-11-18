@@ -1,7 +1,7 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: Trade Skill Reagents
 ## Author: Hotel2Oscar
-## Version: 2.1
+## Version: 2.2
 ## Notes: Shows which trade skills use the reagent in the tooltip
 ## X-Category: Tradeskill
 ## X-Embeds: Ace3
