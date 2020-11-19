@@ -166,6 +166,7 @@ function TradeSkillReagents:OnInitialize()
 
     if isVersionNewer(self.db, version) then
         if self.db.global.version then
+            -- TODO: migrate v2 db to v3 db
             self:Print("newer version detected ( v" .. self.db.global.version ..
                            " -> v" .. version .. " ), resetting database")
         else
