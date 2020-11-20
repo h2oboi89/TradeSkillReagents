@@ -165,19 +165,10 @@ function TradeSkillReagents:OnInitialize()
     local version = addOnVersion()
 
     if isVersionNewer(self.db, version) then
-        if self.db.global.version then
-            -- TODO: migrate v2 db to v3 db
-            self:Print("newer version detected ( v" .. self.db.global.version ..
-                           " -> v" .. version .. " ), resetting database")
-        else
-            self:Print("no version detected, starting new database ( v" ..
-                           version .. " )")
-        end
-
-        self.db.global.version = version
-        self.db.global.options = deepCopy(defaults.global.options)
-        self.db.global.reagents = deepCopy(defaults.global.reagents)
+        self:ResetDB(version)
     end
+
+    self.db.global.version = version
 
     self.db = self.db.global
 
@@ -186,6 +177,41 @@ function TradeSkillReagents:OnInitialize()
     LibStub("AceConfig-3.0"):RegisterOptionsTable("TradeSkillReagents", options)
     LibStub("AceConfigDialog-3.0"):AddToBlizOptions("TradeSkillReagents",
                                                     "Trade Skill Reagents")
+end
+
+function TradeSkillReagents:ResetDB(version)
+    if self.db.global.version then
+        if math.floor(self.db.global.version) == 2 and math.floor(version) == 3 then
+            self:MigrateDB(version)
+            return
+        else
+            self:Print("newer version detected ( v" .. self.db.global.version ..
+                       " -> v" .. version .. " ), resetting database")
+        end
+    else
+        self:Print("no version detected, starting new database ( v" ..
+                       version .. " )")
+    end
+
+    self.db.global.options = deepCopy(defaults.global.options)
+    self.db.global.reagents = deepCopy(defaults.global.reagents)
+end
+
+function TradeSkillReagents:MigrateDB(version)
+    self:Print("newer version detected ( v" .. self.db.global.version ..
+                       " -> v" .. version .. " ), migrating database")
+
+    for reagents, tradeSkills in pairs(self.db.global.reagents) do
+        for tradeSkill, categories in pairs(tradeSkills) do
+            local updatedTradeSkill = {}
+
+            for _, category in ipairs(tradeSkills[tradeSkill]) do
+                updatedTradeSkill[category] = 1
+            end
+
+            tradeSkills[tradeSkill] = updatedTradeSkill
+        end
+    end
 end
 
 function TradeSkillReagents:AddTradeSkillColorOptions()
