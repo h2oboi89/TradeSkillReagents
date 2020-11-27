@@ -16,7 +16,7 @@ local defaults = {
                 tradeSkills = {}
             }
         },
-        reagents = {}
+        reagents = {},
     }
 }
 
@@ -74,6 +74,8 @@ local options = {
         }
     }
 }
+
+local scannedTradeSkills = {}
 
 local function dictInsert(dict, key, value)
     if dict[key] then return end
@@ -340,6 +342,13 @@ function TradeSkillReagents:ProcessRecipes()
     local tradeSkill = getTradeSkillName()
 
     if not tradeSkill or not C_TradeSkillUI.IsTradeSkillReady() then return end
+
+    if scannedTradeSkills[tradeSkill] ~= nil then
+        self:Debug(tradeSkill .. " already scanned")
+        return
+    end
+
+    scannedTradeSkills[tradeSkill] = true
 
     self:Debug("Scanning " .. tradeSkill)
 
