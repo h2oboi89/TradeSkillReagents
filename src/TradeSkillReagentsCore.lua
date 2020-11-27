@@ -343,12 +343,16 @@ function TradeSkillReagents:ProcessRecipes()
 
     if not tradeSkill or not C_TradeSkillUI.IsTradeSkillReady() then return end
 
-    if scannedTradeSkills[tradeSkill] ~= nil then
+    if scannedTradeSkills[tradeSkill] == nil then
+        scannedTradeSkills[tradeSkill] = 0
+    end
+
+    if scannedTradeSkills[tradeSkill] == 5 then
         self:Debug(tradeSkill .. " already scanned")
         return
     end
 
-    scannedTradeSkills[tradeSkill] = true
+    scannedTradeSkills[tradeSkill] = scannedTradeSkills[tradeSkill] + 1
 
     self:Debug("Scanning " .. tradeSkill)
 
