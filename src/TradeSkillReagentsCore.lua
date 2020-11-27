@@ -315,7 +315,7 @@ function TradeSkillReagents:PruneDB(scannedTradeSkill)
                         dictInsert(prunable, reagent, {})
                         dictInsert(prunable[reagent], tradeSkill, category)
 
-                        self:Debug(reagent .. " (" .. tradeSkill .. " - " ..
+                        self:Print(reagent .. " (" .. tradeSkill .. " - " ..
                                     category .. ") will be pruned")
                     end
                 end
