@@ -76,6 +76,7 @@ local options = {
 }
 
 local scannedTradeSkills = {}
+local maxScansPerLogin = 5
 
 local function dictInsert(dict, key, value)
     if dict[key] then return end
@@ -336,6 +337,27 @@ function TradeSkillReagents:PruneDB(scannedTradeSkill)
     end
 end
 
+function TradeSkillReagents:ShouldScan(tradeSkill)
+    local timesScanned = scannedTradeSkills[tradeSkill]
+
+    if timesScanned == nil then
+        timesScanned = 0
+    end
+
+    if timesScanned == maxScansPerLogin then
+        self:Debug(tradeSkill .. " already scanned")
+        return false
+    end
+
+    timesScanned = timesScanned + 1
+
+    scannedTradeSkills[tradeSkill] = timesScanned
+
+    self:Debug("Scanning " .. tradeSkill .. " [ Scan " .. timesScanned .. " of " .. maxScansPerLogin .. "]")
+
+    return true
+end
+
 function TradeSkillReagents:ProcessRecipes()
     self.ScanTimer = nil
 
@@ -343,18 +365,7 @@ function TradeSkillReagents:ProcessRecipes()
 
     if not tradeSkill or not C_TradeSkillUI.IsTradeSkillReady() then return end
 
-    if scannedTradeSkills[tradeSkill] == nil then
-        scannedTradeSkills[tradeSkill] = 0
-    end
-
-    if scannedTradeSkills[tradeSkill] == 5 then
-        self:Debug(tradeSkill .. " already scanned")
-        return
-    end
-
-    scannedTradeSkills[tradeSkill] = scannedTradeSkills[tradeSkill] + 1
-
-    self:Debug("Scanning " .. tradeSkill)
+    if not self:ShouldScan(tradeSkill) then return end
 
     self:PruneDB(tradeSkill)
 
