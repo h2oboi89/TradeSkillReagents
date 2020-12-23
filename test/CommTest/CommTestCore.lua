@@ -24,7 +24,7 @@ end
 --   itemName = <item name> -- same as what was sent in query
 --   tradeSkills = {
 --     <trade skill> = {    -- ie: Tailoring
---       <category>,        -- ie: Kul Tiran Patterns
+--       <category> = #,    -- ie: Kul Tiran Patterns (# is scan flag)
 --       ...                -- other categories if reagent is used in multiple categories
 --     },
 --     ...                  -- other trade skills if reagent is used in multiple trade skills

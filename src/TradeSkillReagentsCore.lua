@@ -16,7 +16,7 @@ local defaults = {
                 tradeSkills = {}
             }
         },
-        reagents = {}
+        reagents = {},
     }
 }
 
@@ -75,17 +75,31 @@ local options = {
     }
 }
 
+local scannedTradeSkills = {}
+local maxScansPerLogin = 5
+
 local function dictInsert(dict, key, value)
     if dict[key] then return end
 
     dict[key] = value
 end
 
-local function listInsert(list, value)
-    local exists = false
-    for _, v in ipairs(list) do if v == value then exists = true end end
+local function valueInsert(dict, key)
+    if dict[key] then
+        dict[key] = dict[key] + 1
+    else
+        dict[key] = 1
+    end
+end
 
-    if not exists then table.insert(list, value) end
+local function removeKey(tbl, key)
+    local prunedTable = {}
+
+    for k, v in pairs(tbl) do 
+        if k ~= key then prunedTable[k] = v end
+    end
+
+    return prunedTable
 end
 
 local function deepCopy(orig)
@@ -120,6 +134,14 @@ local function dump(o)
     end
 end
 
+local function tableLength(tbl)
+    local getN = 0
+
+    for n in pairs(tbl) do getN = getN + 1 end
+
+    return getN
+end
+
 local function addOnVersion()
     return tonumber(GetAddOnMetadata("TradeSkillReagents", "Version"))
 end
@@ -146,18 +168,10 @@ function TradeSkillReagents:OnInitialize()
     local version = addOnVersion()
 
     if isVersionNewer(self.db, version) then
-        if self.db.global.version then
-            self:Print("newer version detected ( v" .. self.db.global.version ..
-                           " -> v" .. version .. " ), resetting database")
-        else
-            self:Print("no version detected, starting new database ( v" ..
-                           version .. " )")
-        end
-
-        self.db.global.version = version
-        self.db.global.options = deepCopy(defaults.global.options)
-        self.db.global.reagents = deepCopy(defaults.global.reagents)
+        self:ResetDB(version)
     end
+
+    self.db.global.version = version
 
     self.db = self.db.global
 
@@ -166,6 +180,41 @@ function TradeSkillReagents:OnInitialize()
     LibStub("AceConfig-3.0"):RegisterOptionsTable("TradeSkillReagents", options)
     LibStub("AceConfigDialog-3.0"):AddToBlizOptions("TradeSkillReagents",
                                                     "Trade Skill Reagents")
+end
+
+function TradeSkillReagents:ResetDB(version)
+    if self.db.global.version then
+        if math.floor(self.db.global.version) == 2 and math.floor(version) == 3 then
+            self:MigrateDB(version)
+            return
+        else
+            self:Print("newer version detected ( v" .. self.db.global.version ..
+                       " -> v" .. version .. " ), resetting database")
+        end
+    else
+        self:Print("no version detected, starting new database ( v" ..
+                       version .. " )")
+    end
+
+    self.db.global.options = deepCopy(defaults.global.options)
+    self.db.global.reagents = deepCopy(defaults.global.reagents)
+end
+
+function TradeSkillReagents:MigrateDB(version)
+    self:Print("newer version detected ( v" .. self.db.global.version ..
+                       " -> v" .. version .. " ), migrating database")
+
+    for reagents, tradeSkills in pairs(self.db.global.reagents) do
+        for tradeSkill, categories in pairs(tradeSkills) do
+            local updatedTradeSkill = {}
+
+            for _, category in ipairs(tradeSkills[tradeSkill]) do
+                updatedTradeSkill[category] = 1
+            end
+
+            tradeSkills[tradeSkill] = updatedTradeSkill
+        end
+    end
 end
 
 function TradeSkillReagents:AddTradeSkillColorOptions()
@@ -254,6 +303,61 @@ local function getTradeSkillCategoryName(categories, categoryID)
     return categoryName
 end
 
+function TradeSkillReagents:PruneDB(scannedTradeSkill)
+    local prunable = {}
+
+    for reagent, tradeSkills in pairs(self.db.reagents) do
+        for tradeSkill, categories in pairs(tradeSkills) do
+            if tradeSkill == scannedTradeSkill then
+                for category, v in pairs(categories) do
+                    categories[category] = (v * 2) % 256
+
+                    if categories[category] == 0 then
+                        dictInsert(prunable, reagent, {})
+                        dictInsert(prunable[reagent], tradeSkill, category)
+
+                        self:Print(reagent .. " (" .. tradeSkill .. " - " ..
+                                    category .. ") will be pruned")
+                    end
+                end
+            end
+        end
+    end
+
+    for reagent, tradeSkills in pairs(prunable) do
+        for tradeSkill, category in pairs(tradeSkills) do
+            local prunedCategories = removeKey(self.db.reagents[reagent][tradeSkill], category)
+
+            if tableLength(prunedCategories) == 0 then
+                self.db.reagents = removeKey(self.db.reagents, reagent)
+            else
+                self.db.reagents[reagent][tradeSkill] = prunedCategories
+            end
+        end
+    end
+end
+
+function TradeSkillReagents:ShouldScan(tradeSkill)
+    local timesScanned = scannedTradeSkills[tradeSkill]
+
+    if timesScanned == nil then
+        timesScanned = 0
+    end
+
+    if timesScanned == maxScansPerLogin then
+        self:Debug(tradeSkill .. " already scanned")
+        return false
+    end
+
+    timesScanned = timesScanned + 1
+
+    scannedTradeSkills[tradeSkill] = timesScanned
+
+    self:Debug("Scanning " .. tradeSkill .. " [ Scan " .. timesScanned .. " of " .. maxScansPerLogin .. "]")
+
+    return true
+end
+
 function TradeSkillReagents:ProcessRecipes()
     self.ScanTimer = nil
 
@@ -261,7 +365,9 @@ function TradeSkillReagents:ProcessRecipes()
 
     if not tradeSkill or not C_TradeSkillUI.IsTradeSkillReady() then return end
 
-    self:Debug("Scanning " .. tradeSkill)
+    if not self:ShouldScan(tradeSkill) then return end
+
+    self:PruneDB(tradeSkill)
 
     local categories = getTradeSkillCategories()
 
@@ -282,7 +388,7 @@ function TradeSkillReagents:ProcessRecipes()
             if reagentName then
                 dictInsert(self.db.reagents, reagentName, {})
                 dictInsert(self.db.reagents[reagentName], tradeSkill, {})
-                listInsert(self.db.reagents[reagentName][tradeSkill], category)
+                valueInsert(self.db.reagents[reagentName][tradeSkill], category)
 
                 reagentCount = reagentCount + 1
             end
@@ -318,7 +424,7 @@ function TradeSkillReagents:AddTradeSkillTooltipInfo(tooltip)
     local lines = {}
 
     for tradeSkill, categories in pairs(self.db.reagents[itemName]) do
-        for _, category in ipairs(categories) do
+        for category, _ in pairs(categories) do
             table.insert(lines, {
                 text = tradeSkill .. " - " .. category,
                 tradeSkill = tradeSkill

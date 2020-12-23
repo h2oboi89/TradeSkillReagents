@@ -16,6 +16,15 @@ def copy_files(source, destination):
 
         shutil.copyfile(src_path, dst_path)
 
+def unique(list1): 
+    unique_list = [] 
+
+    for x in list1: 
+        if x not in unique_list: 
+            unique_list.append(x)
+    
+    return unique_list
+
 def get_libs(src_directory):
     embeds = os.path.join(src_directory, "embeds.xml")
 
@@ -26,7 +35,7 @@ def get_libs(src_directory):
 
     matches = re.findall("file=\"([\S]+)\"", text)
 
-    return (os.path.dirname(m) for m in matches)
+    return unique((os.path.dirname(m) for m in matches))
 
 def main(args):
     if (len(args) < 4):
