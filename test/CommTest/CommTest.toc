@@ -1,7 +1,7 @@
-## Interface: 90005
+## Interface: 90100
 ## Title: CommTest
 ## Author: Hotel2Oscar
-## Version: 2.1
+## Version: 3.3
 ## Notes: Addon to test Trade Skills Reagents inter addon communications
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
