@@ -1,0 +1,14 @@
+## Interface: 20505
+## Title: Trade Skill Reagents
+## Author: Hotel2Oscar
+## Version: 4.0
+## Notes: Shows which trade skills use the reagent in the tooltip
+## X-Category: Tradeskill
+## X-Embeds: Ace3
+## DefaultState: Enabled
+## LoadOnDemand: 0
+## SavedVariables: TradeSkillReagentsDB
+
+embeds.xml
+
+TradeSkillReagentsCore.lua

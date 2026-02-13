@@ -33,7 +33,7 @@ def get_libs(src_directory):
     with open(embeds, 'r') as file:
         text = file.read()
 
-    matches = re.findall("file=\"([\S]+)\"", text)
+    matches = re.findall("file=\"([\\S]+)\"", text)
 
     return unique((os.path.dirname(m) for m in matches))
 

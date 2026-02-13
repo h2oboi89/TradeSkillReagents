@@ -40,7 +40,11 @@ build: clean
 	$(call make_dir,$(RELEASE_DIR))
 	$(PYTHON) .\scripts\build.py $(SOURCE_DIR) $(RELEASE_DIR) $(PROJECT_NAME)
 
-.PHONY: test
-test: build
-	$(PYTHON) .\scripts\deploy.py $(RELEASE_DIR) $(PROJECT_NAME)
+.PHONY: test-bcc
+test-bcc: build
+	$(PYTHON) .\scripts\deploy-bcc.py $(RELEASE_DIR) $(PROJECT_NAME)
+
+.PHONY: test-retail
+test-retail: build
+	$(PYTHON) .\scripts\deploy-retail.py $(RELEASE_DIR) $(PROJECT_NAME)
 	

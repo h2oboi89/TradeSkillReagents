@@ -3,8 +3,9 @@ from shutil import rmtree
 import os
 import sys
 
+
 def main(args):
-    if (len(args) < 3):
+    if len(args) < 3:
         print("missing required arguments <src dir>, <release dir> <project name>")
         exit(1)
 
@@ -12,7 +13,15 @@ def main(args):
     project_name = args[2]
 
     src_directory = os.path.join(release_directory, project_name)
-    dst_directory = os.path.join("C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns", project_name)
+    dst_directory = os.path.join(
+        "C:",
+        "Program Files (x86)",
+        "World of Warcraft",
+        "_retail_",
+        "Interface",
+        "AddOns",
+        project_name,
+    )
 
     print(src_directory)
     print(dst_directory)
@@ -24,5 +33,6 @@ def main(args):
 
     copy_tree(src_directory, dst_directory)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main(sys.argv)
