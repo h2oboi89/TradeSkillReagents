@@ -6,6 +6,7 @@ TradeSkillReagents = LibStub("AceAddon-3.0"):NewAddon("TradeSkillReagents",
 local DataBase = TradeSkillReagentsModules:Import("DataBase");
 local Logger = TradeSkillReagentsModules:Import("Logger");
 local SkillEnumerator = TradeSkillReagentsModules:Import("SkillEnumerator");
+local Options = TradeSkillReagentsModules:Import("Options");
 
 -- Events
 local TRADE_SKILL_SHOW = "TRADE_SKILL_SHOW";
@@ -13,11 +14,12 @@ local CRAFT_SHOW = "CRAFT_SHOW";
 
 function TradeSkillReagents:OnInitialize()
     DataBase:Init(TradeSkillReagents);
-    -- TODO: set for release (INFO)
-    DataBase:SetLogLevel(Logger.DEBUG);
+    DataBase:SetLogLevel(Logger.INFO);
 
     Logger:Init(TradeSkillReagents);
     Logger:Debug("on init");
+
+    Options:Init();
 end
 
 function TradeSkillReagents:OnEnable()
@@ -52,13 +54,17 @@ function TradeSkillReagents:OnTradeSkillShow()
     Logger:Info("Scanning "..tradeskillName)
     DataBase:ShiftReagentValues(tradeskillName)
 
+    local count = 0;
     for _, value in pairs(SkillEnumerator:TradeSkill()) do
         local reagent = value.reagent;
         local skill = value.skill;
         local recipe = value.recipe;
 
         DataBase:SetReagentValue(reagent, skill, recipe);
+        count = count + 1;
     end
+
+    Logger:Info("Scanned "..count.." reagents");
 end
 
 function TradeSkillReagents:OnCraftShow()
@@ -66,11 +72,15 @@ function TradeSkillReagents:OnCraftShow()
     Logger:Info("Scanning "..craftName)
     DataBase:ShiftReagentValues(craftName)
 
+    local count = 0;
     for _, value in pairs(SkillEnumerator:Craft()) do
         local reagent = value.reagent;
         local skill = value.skill;
         local recipe = value.recipe;
         
         DataBase:SetReagentValue(reagent, skill, recipe);
+        count = count + 1;
     end
+
+    Logger:Info("Scanned "..count.." reagents");
 end

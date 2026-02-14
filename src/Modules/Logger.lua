@@ -31,3 +31,12 @@ end
 function Logger:Info(message)
     Logger:LogForLevel(message, Logger.INFO);
 end
+
+function Logger:GetLogLevels()
+    return {
+        [Logger.TRACE] = "TRACE",
+        [Logger.DEBUG] = "DEBUG",
+        [Logger.INFO] = "INFO",
+        [Logger.OFF] = "OFF",
+    };
+end

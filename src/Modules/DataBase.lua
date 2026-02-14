@@ -82,7 +82,7 @@ function DataBase:GetReagentSkills(reagent)
     local reagentDb = DataBase.private.addon.db.global.reagents;
 
     local skills = {}
-    
+
     if reagentDb[reagent] then
         for skill, _ in pairs(reagentDb[reagent]) do
             table.insert(skills, skill)
@@ -90,4 +90,8 @@ function DataBase:GetReagentSkills(reagent)
     end
 
     return skills
+end
+
+function DataBase:ResetReagents()
+    DataBase.private.addon.db.global.reagents = {};
 end
