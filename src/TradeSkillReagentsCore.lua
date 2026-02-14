@@ -53,20 +53,25 @@ function valueShift(dict, skillName)
                 for recipe, value in pairs(skillTable) do
                     skillTable[recipe] = skillTable[recipe] * 2
                     skillTable[recipe] = skillTable[recipe] % 1024
+                    
                     if (skillTable[recipe] == 0) then
+                        Logger:Trace("setting "..recipe.." to nil")
                         skillTable[recipe] = nil
                     end
                 end
             end
+
+            if (next(reagentTable[skill]) == nil) then
+                Logger:Trace("setting "..skill.." to nil")
+                reagentTable[skill] = nil
+            end
         end
-        -- Logger:Info(next(skillTable))
-        -- if next(skillTable) == nil then
-        --     reagentTable[skill] = nil
-        -- end
+
+        if (next(dict[reagent]) == nil) then
+            Logger:Trace("setting "..reagent.." to nil")
+            dict[reagent] = nil
+        end
     end
-    -- if (next(reagentTable) == nil) then
-    --     dict[reagent] = nil
-    -- end
 end
 
 function OnTradeSkillShow()
@@ -85,8 +90,7 @@ end
 
 function OnCraftShow()
     local craftName = GetCraftName();
-    -- Logger:Info(craftName);
-    -- valueShift(TradeSkillReagents.db.global.reagents, craftName);
+    valueShift(TradeSkillReagents.db.global.reagents, craftName);
 
     for _, value in pairs(Enumerator:Craft()) do
         local reagentName = value.reagent;
