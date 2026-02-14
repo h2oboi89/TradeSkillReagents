@@ -1,4 +1,3 @@
-
 local Logger = TradeSkillReagentsModules:Create("Logger");
 local DataBase = TradeSkillReagentsModules:Import("DataBase");
 
