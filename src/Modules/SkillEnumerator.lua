@@ -1,8 +1,9 @@
-local Enumerator = TradeSkillReagentsModules:Create("Enumerator");
+local SkillEnumerator = TradeSkillReagentsModules:Create("SkillEnumerator");
 
 local Logger = TradeSkillReagentsModules:Import("Logger");
 
-function Enumerator:TradeSkill()
+-- Enumerates all available recipes and reagents in the current tradeskill
+function SkillEnumerator:TradeSkill()
     local tradeskillName, _, _, _ = GetTradeSkillLine()
     Logger:Debug("tradeskill opened "..tradeskillName)
 
@@ -32,7 +33,8 @@ function Enumerator:TradeSkill()
     return result;
 end
 
-function Enumerator:Craft()
+-- Enumerates all available recipes and reagents in the current craft
+function SkillEnumerator:Craft()
     local craftNameString = GetCraftName();
     Logger:Debug("craft opened: "..craftNameString)
 

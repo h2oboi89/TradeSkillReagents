@@ -10,6 +10,17 @@ def files(directory):
 def copy_files(source, destination):
     os.makedirs(destination, exist_ok=True)
 
+    module_src_dir = os.path.join(source, "Modules")
+    module_dst_dir = os.path.join(destination, "Modules")
+
+    os.mkdir(module_dst_dir)
+
+    for f in files(module_src_dir):
+        src_path = os.path.join(module_src_dir, f)
+        dst_path = os.path.join(module_dst_dir, f)
+
+        shutil.copyfile(src_path, dst_path)
+
     for f in files(source):
         src_path = os.path.join(source, f)
         dst_path = os.path.join(destination, f)

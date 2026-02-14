@@ -3,7 +3,7 @@ TradeSkillReagents = LibStub("AceAddon-3.0"):NewAddon("TradeSkillReagents",
                                                       "AceEvent-3.0")
 
 local Logger = TradeSkillReagentsModules:Import("Logger");
-local Enumerator = TradeSkillReagentsModules:Import("Enumerator");
+local SkillEnumerator = TradeSkillReagentsModules:Import("SkillEnumerator");
 
 local defaults = {
     global = {
@@ -46,7 +46,6 @@ function valueInsert(dict, key)
 end
 
 function valueShift(dict, skillName)
-    Logger:Info(skillName);
     for reagent, reagentTable in pairs(dict) do
         for skill, skillTable in pairs(reagentTable) do
             if (skill == skillName) then
@@ -76,9 +75,10 @@ end
 
 function OnTradeSkillShow()
     local tradeskillName, _, _, _ = GetTradeSkillLine()
+    Logger:Info("Scanning "..tradeskillName)
     valueShift(TradeSkillReagents.db.global.reagents, tradeskillName);
 
-    for _, value in pairs(Enumerator:TradeSkill()) do
+    for _, value in pairs(SkillEnumerator:TradeSkill()) do
         local reagentName = value.reagent;
         local skill = value.skill;
         local recipe = value.recipe;
@@ -90,9 +90,10 @@ end
 
 function OnCraftShow()
     local craftName = GetCraftName();
+    Logger:Info("Scanning "..craftName)
     valueShift(TradeSkillReagents.db.global.reagents, craftName);
 
-    for _, value in pairs(Enumerator:Craft()) do
+    for _, value in pairs(SkillEnumerator:Craft()) do
         local reagentName = value.reagent;
         local skill = value.skill;
         local recipe = value.recipe;
