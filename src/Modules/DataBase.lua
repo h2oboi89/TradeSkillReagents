@@ -8,12 +8,6 @@ local defaults = {
     }
 }
 
-function dump(t)
-    for key, value in pairs(t) do
-        print(k.." "..v);
-    end
-end
-
 function DataBase:Init(addon)
     DataBase.private.addon = addon;
 
@@ -28,6 +22,25 @@ function DataBase:SetLogLevel(value)
     DataBase.private.addon.db.global.logLevel = value;
 end
 
+function dictInsert(dict, key, value)
+    if dict[key] == nil then 
+        dict[key] = value
+    end
+end
+
+function valueInsert(dict, key)
+    if dict[key] == nil then
+        dict[key] = 0
+    end
+
+    dict[key] = dict[key] + 1
+end
+
+function valueShift(dict, key)
+    dict[key] = dict[key] * 2
+    dict[key] = dict[key] % 1024
+end
+
 function DataBase:ShiftReagentValues(skillName)
     local reagentDb = DataBase.private.addon.db.global.reagents;
     
@@ -35,8 +48,7 @@ function DataBase:ShiftReagentValues(skillName)
         for skill, recipeTable in pairs(skillTable) do
             if (skill == skillName) then
                 for recipe, value in pairs(recipeTable) do
-                    recipeTable[recipe] = recipeTable[recipe] * 2
-                    recipeTable[recipe] = recipeTable[recipe] % 1024
+                    valueShift(recipeTable, recipe);
                     
                     if (recipeTable[recipe] == 0) then
                         Logger:Trace("setting "..recipe.." to nil")
@@ -58,26 +70,24 @@ function DataBase:ShiftReagentValues(skillName)
     end
 end
 
-function dictInsert(dict, key, value)
-    if dict[key] then 
-        return
-    end
-
-    dict[key] = value
-end
-
-function valueInsert(dict, key)
-    if dict[key] then
-        dict[key] = dict[key] + 1
-    else
-        dict[key] = 1
-    end
-end
-
 function DataBase:SetReagentValue(reagent, skill, recipe)
     local reagentDb = DataBase.private.addon.db.global.reagents;
 
     dictInsert(reagentDb, reagent, {});
     dictInsert(reagentDb[reagent], skill, {});
     valueInsert(reagentDb[reagent][skill], recipe);
+end
+
+function DataBase:GetReagentSkills(reagent)
+    local reagentDb = DataBase.private.addon.db.global.reagents;
+
+    local skills = {}
+    
+    if reagentDb[reagent] then
+        for skill, _ in pairs(reagentDb[reagent]) do
+            table.insert(skills, skill)
+        end
+    end
+
+    return skills
 end

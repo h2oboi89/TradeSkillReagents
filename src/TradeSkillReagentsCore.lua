@@ -1,6 +1,7 @@
 TradeSkillReagents = LibStub("AceAddon-3.0"):NewAddon("TradeSkillReagents", 
                                                       "AceConsole-3.0",
-                                                      "AceEvent-3.0")
+                                                      "AceEvent-3.0",
+                                                      "AceHook-3.0")
 
 local DataBase = TradeSkillReagentsModules:Import("DataBase");
 local Logger = TradeSkillReagentsModules:Import("Logger");
@@ -22,8 +23,11 @@ end
 function TradeSkillReagents:OnEnable()
     Logger:Debug("on enabled");
 
-    TradeSkillReagents:RegisterEvent(TRADE_SKILL_SHOW, OnTradeSkillShow);
-    TradeSkillReagents:RegisterEvent(CRAFT_SHOW, OnCraftShow);
+    TradeSkillReagents:RegisterEvent(TRADE_SKILL_SHOW, TradeSkillReagents.OnTradeSkillShow);
+    TradeSkillReagents:RegisterEvent(CRAFT_SHOW, TradeSkillReagents.OnCraftShow);
+
+    TradeSkillReagents:HookScript(GameTooltip, "OnToolTipSetItem", TradeSkillReagents.AddTradeSkillTooltipInfo)
+    TradeSkillReagents:HookScript(ItemRefTooltip, "OnToolTipSetItem", TradeSkillReagents.AddTradeSkillTooltipInfo)
 end
 
 function TradeSkillReagents:OnDisable()
@@ -33,7 +37,17 @@ function TradeSkillReagents:OnDisable()
     TradeSkillReagents:UnregisterEvent(CRAFT_SHOW);
 end
 
-function OnTradeSkillShow()
+function TradeSkillReagents:AddTradeSkillTooltipInfo()
+    local name, _ = self:GetItem()
+
+    local skills = DataBase:GetReagentSkills(name)
+
+    for _, skill in ipairs(skills) do
+        self:AddLine(skill)
+    end
+end
+
+function TradeSkillReagents:OnTradeSkillShow()
     local tradeskillName, _, _, _ = GetTradeSkillLine()
     Logger:Info("Scanning "..tradeskillName)
     DataBase:ShiftReagentValues(tradeskillName)
@@ -47,7 +61,7 @@ function OnTradeSkillShow()
     end
 end
 
-function OnCraftShow()
+function TradeSkillReagents:OnCraftShow()
     local craftName = GetCraftName();
     Logger:Info("Scanning "..craftName)
     DataBase:ShiftReagentValues(craftName)
