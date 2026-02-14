@@ -6,6 +6,10 @@ local DataBase = TradeSkillReagentsModules:Import("DataBase");
 local Logger = TradeSkillReagentsModules:Import("Logger");
 local SkillEnumerator = TradeSkillReagentsModules:Import("SkillEnumerator");
 
+-- Events
+local TRADE_SKILL_SHOW = "TRADE_SKILL_SHOW";
+local CRAFT_SHOW = "CRAFT_SHOW";
+
 function TradeSkillReagents:OnInitialize()
     DataBase:Init(TradeSkillReagents);
     -- TODO: set for release (INFO)
@@ -18,15 +22,15 @@ end
 function TradeSkillReagents:OnEnable()
     Logger:Debug("on enabled");
 
-    TradeSkillReagents:RegisterEvent("TRADE_SKILL_SHOW", OnTradeSkillShow);
-    TradeSkillReagents:RegisterEvent("CRAFT_SHOW", OnCraftShow);
+    TradeSkillReagents:RegisterEvent(TRADE_SKILL_SHOW, OnTradeSkillShow);
+    TradeSkillReagents:RegisterEvent(CRAFT_SHOW, OnCraftShow);
 end
 
 function TradeSkillReagents:OnDisable()
     Logger:Debug("on disabled");
 
-    TradeSkillReagents:UnregisterEvent("TRADE_SKILL_SHOW");
-    TradeSkillReagents:UnregisterEvent("CRAFT_SHOW");
+    TradeSkillReagents:UnregisterEvent(TRADE_SKILL_SHOW);
+    TradeSkillReagents:UnregisterEvent(CRAFT_SHOW);
 end
 
 function OnTradeSkillShow()
