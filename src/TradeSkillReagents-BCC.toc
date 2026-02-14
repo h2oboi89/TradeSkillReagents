@@ -8,4 +8,7 @@
 
 embeds.xml
 
+TradeSkillReagentsModules.lua
+TradeSkillReagentsLogger.lua
+TradeSkillReagentsEnumerator.lua   
 TradeSkillReagentsCore.lua

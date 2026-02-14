@@ -2,33 +2,34 @@ TradeSkillReagents = LibStub("AceAddon-3.0"):NewAddon("TradeSkillReagents",
                                                       "AceConsole-3.0",
                                                       "AceEvent-3.0")
 
+local Logger = TradeSkillReagentsModules:Import("Logger");
+local Enumerator = TradeSkillReagentsModules:Import("Enumerator");
+
 local defaults = {
     global = {
-        debug = true,
+        logLevel = Logger.DEBUG,
         reagents = {},
     }
 }
 
-function TradeSkillReagents:Debug(message)
-    if (TradeSkillReagents.db.global.debug) then
-        TradeSkillReagents:Print(message)
-    end
-end
-
 function TradeSkillReagents:OnInitialize()
     TradeSkillReagents.db = LibStub("AceDB-3.0"):New("TradeSkillReagentsDB", defaults, true)
-
-    TradeSkillReagents:Debug("on init")
+    Logger:Init(TradeSkillReagents)
+    Logger:Debug("on init")
 end
 
 function TradeSkillReagents:OnEnable()
-    TradeSkillReagents:Debug("on enabled")
+    Logger:Debug("on enabled")
 
     TradeSkillReagents:RegisterEvent("TRADE_SKILL_SHOW", OnTradeSkillShow)
     TradeSkillReagents:RegisterEvent("CRAFT_SHOW", OnCraftShow)
 end
 
-local function dictInsert(dict, key, value)
+function TradeSkillReagents:GetLogLevel()
+    return TradeSkillReagents.db.global.logLevel;
+end
+
+function dictInsert(dict, key, value)
     if dict[key] then 
         return
     end
@@ -36,7 +37,7 @@ local function dictInsert(dict, key, value)
     dict[key] = value
 end
 
-local function valueInsert(dict, key)
+function valueInsert(dict, key)
     if dict[key] then
         dict[key] = dict[key] + 1
     else
@@ -44,44 +45,55 @@ local function valueInsert(dict, key)
     end
 end
 
-function OnTradeSkillShow()
-    TradeSkillReagents:Debug("tradeskill opened")
-    local tradeskillName, _, _, _ = GetTradeSkillLine()
-    -- TradeSkillReagents:Debug(tradeskillName)
-    for id=1,GetNumTradeSkills() do
-        local skillName, skillType, _, _, _, _ = GetTradeSkillInfo(id);
-        if (skillName and skillType ~= "header") then
-            -- TradeSkillReagents:Debug(skillName)
-            for i=1, GetTradeSkillNumReagents(id) do
-                local reagentName, _, _, _ = GetTradeSkillReagentInfo(id, i);
-                -- TradeSkillReagents:Debug(" - "..reagentName)
-                
-                dictInsert(TradeSkillReagents.db.global.reagents, reagentName, {})
-                dictInsert(TradeSkillReagents.db.global.reagents[reagentName], tradeskillName, {})
-                valueInsert(TradeSkillReagents.db.global.reagents[reagentName][tradeskillName], skillName)
-                TradeSkillReagents:Debug(reagentName.." "..tradeskillName.." "..skillName)
+function valueShift(dict, skillName)
+    Logger:Info(skillName);
+    for reagent, reagentTable in pairs(dict) do
+        for skill, skillTable in pairs(reagentTable) do
+            if (skill == skillName) then
+                for recipe, value in pairs(skillTable) do
+                    skillTable[recipe] = skillTable[recipe] * 2
+                    skillTable[recipe] = skillTable[recipe] % 1024
+                    if (skillTable[recipe] == 0) then
+                        skillTable[recipe] = nil
+                    end
+                end
             end
         end
+        -- Logger:Info(next(skillTable))
+        -- if next(skillTable) == nil then
+        --     reagentTable[skill] = nil
+        -- end
+    end
+    -- if (next(reagentTable) == nil) then
+    --     dict[reagent] = nil
+    -- end
+end
+
+function OnTradeSkillShow()
+    local tradeskillName, _, _, _ = GetTradeSkillLine()
+    valueShift(TradeSkillReagents.db.global.reagents, tradeskillName);
+
+    for _, value in pairs(Enumerator:TradeSkill()) do
+        local reagentName = value.reagent;
+        local skill = value.skill;
+        local recipe = value.recipe;
+        dictInsert(TradeSkillReagents.db.global.reagents, reagentName, {})
+        dictInsert(TradeSkillReagents.db.global.reagents[reagentName], skill, {})
+        valueInsert(TradeSkillReagents.db.global.reagents[reagentName][skill], recipe)
     end
 end
 
 function OnCraftShow()
-    TradeSkillReagents:Debug("craft opened")
-    local craftNameString = GetCraftName();
-    -- TradeSkillReagents:Debug(craftNameString)
-    for id=1,GetNumCrafts() do
-        local craftName, craftSubSpellName, craftType, _, _, _, _ = GetCraftInfo(id);
-        if (craftName and craftType ~= "header") then
-            -- TradeSkillReagents:Debug(craftName)
-            for i=1, GetCraftNumReagents(id) do
-                local reagentName, _, _, _ = GetCraftReagentInfo(id, i);
-                -- TradeSkillReagents:Debug(" - "..reagentName)
-                
-                dictInsert(TradeSkillReagents.db.global.reagents, reagentName, {})
-                dictInsert(TradeSkillReagents.db.global.reagents[reagentName], craftNameString, {})
-                valueInsert(TradeSkillReagents.db.global.reagents[reagentName][craftNameString], craftName)
-                TradeSkillReagents:Debug(reagentName.." "..craftNameString.." "..craftName)
-            end
-        end
+    local craftName = GetCraftName();
+    -- Logger:Info(craftName);
+    -- valueShift(TradeSkillReagents.db.global.reagents, craftName);
+
+    for _, value in pairs(Enumerator:Craft()) do
+        local reagentName = value.reagent;
+        local skill = value.skill;
+        local recipe = value.recipe;
+        dictInsert(TradeSkillReagents.db.global.reagents, reagentName, {})
+        dictInsert(TradeSkillReagents.db.global.reagents[reagentName], skill, {})
+        valueInsert(TradeSkillReagents.db.global.reagents[reagentName][skill], recipe)
     end
 end
