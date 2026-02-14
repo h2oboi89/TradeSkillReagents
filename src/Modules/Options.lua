@@ -17,6 +17,7 @@ local options = {
                     name = "Log Level",
                     type = "select",
                     order = 0,
+                    desc = "Sets the verbosity of output from the addon.",
                     values = Logger:GetLogLevels(),
                     get = function() return DataBase:GetLogLevel(); end,
                     set = function(_, value) DataBase:SetLogLevel(value); end,
@@ -32,7 +33,9 @@ local options = {
                 resetReagents = {
                     name = "Reset Database",
                     type = "execute",
+                    desc = "WARNING: resets addon to default. Will need to rescan all Trade Skills to relearn reagents.",
                     func = function() DataBase:ResetReagents(); end,
+                    confirm = function() return "Are you sure? All reagent data will be lost."; end,
                 },
             },
         },
