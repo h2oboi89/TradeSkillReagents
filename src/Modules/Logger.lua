@@ -1,5 +1,6 @@
 
 local Logger = TradeSkillReagentsModules:Create("Logger");
+local DataBase = TradeSkillReagentsModules:Import("DataBase");
 
 Logger.TRACE = 0;
 Logger.DEBUG = 1;
@@ -14,7 +15,7 @@ function Logger:Init(addon)
 end
 
 function Logger:LogForLevel(message, level)
-    if (level >= Logger.private.addon:GetLogLevel()) then
+    if (level >= DataBase:GetLogLevel()) then
         Logger.private.addon:Print(message)
     end
 end

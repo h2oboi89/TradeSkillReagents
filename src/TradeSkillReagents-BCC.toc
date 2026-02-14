@@ -10,6 +10,7 @@ embeds.xml
 
 TradeSkillReagentsModules.lua
 
+Modules\DataBase.lua
 Modules\Logger.lua
 Modules\SkillEnumerator.lua
 
