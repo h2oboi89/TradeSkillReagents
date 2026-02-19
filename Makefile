@@ -5,6 +5,7 @@ SHELL := C:\Windows\System32\cmd.exe
 
 PYTHON := py -3
 
+CURRENT_DIR := .
 SOURCE_DIR := .\src
 RELEASE_DIR := .\Release
 PACKAGE_DIR := .\artifacts
@@ -38,9 +39,17 @@ clean:
 .PHONY: build
 build: clean
 	$(call make_dir,$(RELEASE_DIR))
-	$(PYTHON) .\scripts\build.py $(SOURCE_DIR) $(RELEASE_DIR) $(PROJECT_NAME)
+	$(PYTHON) .\scripts\build.py $(CURRENT_DIR) $(PROJECT_NAME)
 
-.PHONY: test
-test: build
-	$(PYTHON) .\scripts\deploy.py $(RELEASE_DIR) $(PROJECT_NAME)
+.PHONY: test-classic
+test-classic: build
+	$(PYTHON) .\scripts\deploy-classic.py $(RELEASE_DIR) $(PROJECT_NAME)
+
+.PHONY: test-bcc
+test-bcc: build
+	$(PYTHON) .\scripts\deploy-bcc.py $(RELEASE_DIR) $(PROJECT_NAME)
+
+# .PHONY: test-retail
+# test-retail: build
+# 	$(PYTHON) .\scripts\deploy-retail.py $(RELEASE_DIR) $(PROJECT_NAME)
 	

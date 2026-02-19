@@ -1,0 +1,19 @@
+## Interface: 20505
+## Title: Trade Skill Reagents |cFF00FF00 v4.1|r
+## Author: Hotel2Oscar
+## Version: 4.1
+## Notes: Shows which trade skills use the reagent in the tooltip
+## Category: Tradeskill
+## SavedVariables: TradeSkillReagentsDB
+## IconTexture: Interface\Icons\inv_misc_candle_03
+
+embeds.xml
+
+TradeSkillReagentsModules.lua
+
+Modules\DataBase.lua
+Modules\Logger.lua
+Modules\SkillEnumerator.lua
+Modules\Options.lua
+
+TradeSkillReagentsCore.lua
