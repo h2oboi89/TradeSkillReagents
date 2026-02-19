@@ -1,4 +1,4 @@
-## Interface: 20505
+## Interface: 11508
 ## Title: Trade Skill Reagents
 ## Author: Hotel2Oscar
 ## Version: 4.1
