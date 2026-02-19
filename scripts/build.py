@@ -13,7 +13,7 @@ def copy_files(source, destination):
     module_src_dir = os.path.join(source, "Modules")
     module_dst_dir = os.path.join(destination, "Modules")
 
-    os.mkdir(module_dst_dir)
+    os.makedirs(module_dst_dir, exist_ok=True)
 
     for f in files(module_src_dir):
         src_path = os.path.join(module_src_dir, f)
@@ -49,13 +49,14 @@ def get_libs(src_directory):
     return unique((os.path.dirname(m) for m in matches))
 
 def main(args):
-    if (len(args) < 4):
-        print("missing required arguments <src dir>, <release dir> <project name>")
+    if (len(args) < 3):
+        print("missing required arguments <current dir> <project name>")
         exit(1)
 
-    src_directory = args[1]
-    release_directory = args[2]
-    project_name = args[3]
+    current_dir = args[1]
+    src_directory = os.path.join(current_dir, "src")
+    release_directory = os.path.join(current_dir, "Release")
+    project_name = args[2]
     
     project_directory = os.path.join(release_directory, project_name)
 
