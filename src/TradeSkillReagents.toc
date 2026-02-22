@@ -1,5 +1,5 @@
 ## Interface: 00000
 ## Title: Trade Skill Reagents
 ## Author: Hotel2Oscar
-## Version: 3.3
+## Version: 4.2
 ## Notes: Shows which trade skills use the reagent in the tooltip
