@@ -3,6 +3,7 @@ local ToolTip = TradeSkillReagentsModules:Create("ToolTip");
 local Logger = TradeSkillReagentsModules:Import("Logger");
 local DataBase = TradeSkillReagentsModules:Import("DataBase");
 
+-- Updates Tooltip if necessary
 function ToolTip:Init(addon)
     ToolTip.private.addon = addon;
 

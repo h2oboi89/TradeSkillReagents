@@ -8,6 +8,7 @@ local defaults = {
     }
 }
 
+-- reagent database and means of interacting with it.
 function DataBase:Init(addon)
     DataBase.private.addon = addon;
 

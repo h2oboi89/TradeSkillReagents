@@ -2,6 +2,8 @@ local SkillEnumerator = TradeSkillReagentsModules:Create("SkillEnumerator");
 
 local Logger = TradeSkillReagentsModules:Import("Logger");
 
+-- means of enumerating recipes and reagents
+
 -- Enumerates all available recipes and reagents in the current tradeskill
 function SkillEnumerator:TradeSkill()
     local tradeskillName, _, _, _ = GetTradeSkillLine()

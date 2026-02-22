@@ -9,6 +9,7 @@ Logger.ERROR = 4;
 Logger.FATAL = 5;
 Logger.OFF = 6;
 
+-- console logger
 function Logger:Init(addon)
     Logger.private.addon = addon;
 end

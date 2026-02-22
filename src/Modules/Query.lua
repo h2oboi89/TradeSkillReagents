@@ -6,6 +6,7 @@ local DataBase = TradeSkillReagentsModules:Import("DataBase");
 local TRADE_SKILL_REAGENTS_QUERY = "TRADE_SKILL_REAGENTS_QUERY";
 local TRADE_SKILL_REAGENTS_RESPONSE = "TRADE_SKILL_REAGENTS_RESPONSE";
 
+-- listens for and responds to queries from other addons
 function Query:Init(addon)
     Query.private.addon = addon;
 

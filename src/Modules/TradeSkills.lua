@@ -7,6 +7,7 @@ local SkillEnumerator = TradeSkillReagentsModules:Import("SkillEnumerator");
 local TRADE_SKILL_SHOW = "TRADE_SKILL_SHOW";
 local CRAFT_SHOW = "CRAFT_SHOW";
 
+-- Does the scanning of the Trade Skills and Crafts
 function TradeSkills:Init(addon)
     TradeSkills.private.addon = addon;
 
