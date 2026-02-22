@@ -13,7 +13,10 @@ TradeSkillReagentsModules.lua
 
 Modules\DataBase.lua
 Modules\Logger.lua
-Modules\SkillEnumerator.lua
 Modules\Options.lua
+Modules\Query.lua
+Modules\SkillEnumerator.lua
+Modules\Tooltip.lua
+Modules\TradeSkills.lua
 
 TradeSkillReagentsCore.lua

@@ -11,13 +11,13 @@ local CRAFT_SHOW = "CRAFT_SHOW";
 function TradeSkills:Init(addon)
     TradeSkills.private.addon = addon;
 
-    TradeSkills.private.addon.RegisterEvent(TRADE_SKILL_SHOW, TradeSkills.OnTradeSkillShow);
-    TradeSkills.private.addon.RegisterEvent(CRAFT_SHOW, TradeSkills.OnCraftShow);
+    TradeSkills.private.addon:RegisterEvent(TRADE_SKILL_SHOW, TradeSkills.OnTradeSkillShow);
+    TradeSkills.private.addon:RegisterEvent(CRAFT_SHOW, TradeSkills.OnCraftShow);
 end
 
 function TradeSkills:DeInit()
-    TradeSkills.private.addon.UnregisterEvent(TRADE_SKILL_SHOW);
-    TradeSkills.private.addon.UnregisterEvent(CRAFT_SHOW);
+    TradeSkills.private.addon:UnregisterEvent(TRADE_SKILL_SHOW);
+    TradeSkills.private.addon:UnregisterEvent(CRAFT_SHOW);
 end
 
 function TradeSkills:ScanTradeSkill()
@@ -42,7 +42,7 @@ function TradeSkills:OnTradeSkillShow()
     local retOk, error = pcall(TradeSkills.ScanTradeSkill)
 
     if not retOk then
-        Logger.Error(error);
+        Logger.Error("Error: "..error);
     end
 end
 
@@ -68,6 +68,6 @@ function TradeSkills:OnCraftShow()
     local retOk, error = pcall(TradeSkills.ScanCraft)
 
     if not retOk then
-        Logger.Error(error);
+        Logger.Error("Error: "..error);
     end
 end

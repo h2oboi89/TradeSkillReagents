@@ -13,6 +13,9 @@ function DataBase:Init(addon)
     DataBase.private.addon = addon;
 
     DataBase.private.addon.db = LibStub("AceDB-3.0"):New("TradeSkillReagentsDB", defaults, true)
+    if not DataBase.private.addon.db.global.logLevel then
+        DataBase:SetLogLevel(Logger.INFO);
+    end
 end
 
 function DataBase:GetLogLevel()

@@ -12,8 +12,6 @@ local TradeSkills = TradeSkillReagentsModules:Import("TradeSkills");
 
 function TradeSkillReagents:OnInitialize()
     DataBase:Init(TradeSkillReagents);
-    DataBase:SetLogLevel(Logger.INFO);
-
     Logger:Init(TradeSkillReagents);
     Logger:Debug("on init");
 
@@ -24,7 +22,7 @@ function TradeSkillReagents:OnEnable()
     Logger:Debug("on enabled");
     
     Query:Init(TradeSkillReagents);
-    ToolTip:Init(TradeSkillReagents);    
+    ToolTip:Init(TradeSkillReagents);
     TradeSkills:Init(TradeSkillReagents);
 end
 

@@ -4,12 +4,14 @@ CommTest = LibStub("AceAddon-3.0"):NewAddon("CommTest",
 
 function CommTest:OnInitialize()
     -- Registers "/commtest" as a slash command
-    self:RegisterChatCommand("commtest", "QueryItem")
+    self:RegisterChatCommand("commtest", CommTest.QueryItem)
+    self:Print("commtest on init")
 end
 
 function CommTest:OnEnable()
     -- Registers response message from Trade Skill Reagents addon
     self:RegisterMessage("TRADE_SKILL_REAGENTS_RESPONSE")
+    self:Print("commtest on enable")
 end
 
 -- Handles slash command and sends query to Trade Skills Reagents addon
