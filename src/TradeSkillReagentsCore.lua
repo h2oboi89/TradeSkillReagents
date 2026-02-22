@@ -49,7 +49,7 @@ function TradeSkillReagents:AddTradeSkillTooltipInfo()
     end
 end
 
-function TradeSkillReagents:OnTradeSkillShow()
+function TradeSkillReagents:ScanTradeSkill()
     local tradeskillName, _, _, _ = GetTradeSkillLine()
     Logger:Info("Scanning "..tradeskillName)
     DataBase:ShiftReagentValues(tradeskillName)
@@ -67,7 +67,15 @@ function TradeSkillReagents:OnTradeSkillShow()
     Logger:Info("Scanned "..count.." reagents");
 end
 
-function TradeSkillReagents:OnCraftShow()
+function TradeSkillReagents:OnTradeSkillShow()
+    local retOk, error = pcall(TradeSkillReagents.ScanTradeSkill)
+
+    if not retOk then
+        Logger.Error(error);
+    end
+end
+
+function TradeSkillReagents:ScanCraft()
     local craftName = GetCraftName();
     Logger:Info("Scanning "..craftName)
     DataBase:ShiftReagentValues(craftName)
@@ -83,4 +91,12 @@ function TradeSkillReagents:OnCraftShow()
     end
 
     Logger:Info("Scanned "..count.." reagents");
+end
+
+function TradeSkillReagents:OnCraftShow()
+    local retOk, error = pcall(TradeSkillReagents.ScanCraft)
+
+    if not retOk then
+        Logger.Error(error);
+    end
 end
