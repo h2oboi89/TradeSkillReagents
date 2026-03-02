@@ -4,19 +4,26 @@ local Logger = TradeSkillReagentsModules:Import("Logger");
 
 -- means of enumerating recipes and reagents
 
+function IsCraftable(skillType)
+    return skillType == "trivial" or skillType == "easy" or skillType == "medium" or skillType == "optimal" or skillType == "difficult";
+end
+
 -- Enumerates all available recipes and reagents in the current tradeskill
 function SkillEnumerator:TradeSkill()
     local tradeskillName, _, _, _ = GetTradeSkillLine()
     Logger:Debug("tradeskill opened "..tradeskillName)
-
+    
     local index = 0;
     local result = {};
-
-    for id=1,GetNumTradeSkills() do
+    
+    local numSkills = GetNumTradeSkills();
+    Logger:Trace(" - Found "..numSkills.." skills")
+    for id=1, numSkills do
         local skillName, skillType, _, _, _, _ = GetTradeSkillInfo(id);
-        if (skillName and skillType ~= "header") then
-            Logger:Trace(skillName)
-            for i=1, GetTradeSkillNumReagents(id) do
+        if (skillName and IsCraftable(skillType)) then
+            local numReagents = GetTradeSkillNumReagents(id);
+            Logger:Trace(skillName.." "..numReagents.." with reagents")
+            for i=1, numReagents do
                 local reagentName, _, _, _ = GetTradeSkillReagentInfo(id, i);
                 Logger:Trace(" - "..reagentName)
 
@@ -42,12 +49,14 @@ function SkillEnumerator:Craft()
 
     local index = 0;
     local result = {};
-
-    for id=1,GetNumCrafts() do
+    local numCrafts = GetNumCrafts();
+    Logger:Trace(" - Found "..numCrafts.." crafts")
+    for id=1, numCrafts do
         local craftName, craftSubSpellName, craftType, _, _, _, _ = GetCraftInfo(id);
-        if (craftName and craftType ~= "header") then
-            Logger:Trace(craftName)
-            for i=1, GetCraftNumReagents(id) do
+        if (craftName and IsCraftable(craftType)) then
+            local numReagents = GetCraftNumReagents(id);
+            Logger:Trace(craftName.." "..numReagents.." with reagents")
+            for i=1, numReagents do
                 local reagentName, _, _, _ = GetCraftReagentInfo(id, i);
                 Logger:Trace(" - "..reagentName)
                 
