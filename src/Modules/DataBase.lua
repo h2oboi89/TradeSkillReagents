@@ -33,8 +33,10 @@ function dictInsert(dict, key, value)
 end
 
 function valueInsert(list, value)
-    if (list[value]) then
-        return
+    for _, v in ipairs(list) do
+        if (v == value) then
+            return;
+        end
     end
 
     table.insert(list, value);
