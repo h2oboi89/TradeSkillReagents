@@ -23,7 +23,6 @@ end
 function TradeSkills:ScanTradeSkill()
     local tradeskillName, _, _, _ = GetTradeSkillLine()
     Logger:Info("Scanning Trade Skill "..tradeskillName)
-    DataBase:ShiftReagentValues(tradeskillName)
 
     local count = 0;
     for _, value in pairs(SkillEnumerator:TradeSkill()) do
@@ -49,7 +48,6 @@ end
 function TradeSkills:ScanCraft()
     local craftName = GetCraftName();
     Logger:Info("Scanning Craft "..craftName)
-    DataBase:ShiftReagentValues(craftName)
 
     local count = 0;
     for _, value in pairs(SkillEnumerator:Craft()) do

@@ -6,7 +6,6 @@ TradeSkillReagents = LibStub("AceAddon-3.0"):NewAddon("TradeSkillReagents",
 local DataBase = TradeSkillReagentsModules:Import("DataBase");
 local Logger = TradeSkillReagentsModules:Import("Logger");
 local Options = TradeSkillReagentsModules:Import("Options");
--- local Query = TradeSkillReagentsModules:Import("Query");
 local ToolTip = TradeSkillReagentsModules:Import("ToolTip");
 local TradeSkills = TradeSkillReagentsModules:Import("TradeSkills");
 
@@ -21,7 +20,6 @@ end
 function TradeSkillReagents:OnEnable()
     Logger:Debug("on enabled");
     
-    -- Query:Init(TradeSkillReagents);
     ToolTip:Init(TradeSkillReagents);
     TradeSkills:Init(TradeSkillReagents);
 end

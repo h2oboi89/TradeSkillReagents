@@ -8,7 +8,7 @@ local defaults = {
     }
 }
 
--- reagent database and means of interacting with it.
+-- addon database and means of interacting with it.
 function DataBase:Init(addon)
     DataBase.private.addon = addon;
 
@@ -32,46 +32,12 @@ function dictInsert(dict, key, value)
     end
 end
 
-function valueInsert(dict, key)
-    if dict[key] == nil then
-        dict[key] = 0
+function valueInsert(list, value)
+    if (list[value]) then
+        return
     end
 
-    dict[key] = dict[key] + 1
-end
-
-function valueShift(dict, key)
-    dict[key] = dict[key] * 2
-    dict[key] = dict[key] % 1024
-end
-
-function DataBase:ShiftReagentValues(skillName)
-    local reagentDb = DataBase.private.addon.db.global.reagents;
-    
-    for reagent, skillTable in pairs(reagentDb) do
-        for skill, recipeTable in pairs(skillTable) do
-            if (skill == skillName) then
-                for recipe, value in pairs(recipeTable) do
-                    valueShift(recipeTable, recipe);
-                    
-                    if (recipeTable[recipe] == 0) then
-                        Logger:Trace("setting "..recipe.." to nil")
-                        recipeTable[recipe] = nil
-                    end
-                end
-            end
-
-            if (next(skillTable[skill]) == nil) then
-                Logger:Trace("setting "..skill.." to nil")
-                skillTable[skill] = nil
-            end
-        end
-
-        if (next(reagentDb[reagent]) == nil) then
-            Logger:Trace("setting "..reagent.." to nil")
-            reagentDb[reagent] = nil
-        end
-    end
+    table.insert(list, value);
 end
 
 function DataBase:SetReagentValue(reagent, skill, recipe)
