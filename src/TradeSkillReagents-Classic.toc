@@ -11,10 +11,11 @@ embeds.xml
 
 TradeSkillReagentsModules.lua
 
+Modules\BlizzApi.lua
 Modules\DataBase.lua
+Modules\Debug.lua
 Modules\Logger.lua
 Modules\Options.lua
-Modules\Query.lua
 Modules\SkillEnumerator.lua
 Modules\Tooltip.lua
 Modules\TradeSkills.lua

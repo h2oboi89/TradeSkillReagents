@@ -20,12 +20,11 @@ function TradeSkills:DeInit()
     TradeSkills.private.addon:UnregisterEvent(CRAFT_SHOW);
 end
 
-function TradeSkills:ScanTradeSkill()
-    local tradeskillName, _, _, _ = GetTradeSkillLine()
-    Logger:Info("Scanning Trade Skill "..tradeskillName)
+function TradeSkills:OnTradeSkillShow()
+    local tradeSkill = SkillEnumerator:TradeSkill();
 
     local count = 0;
-    for _, value in pairs(SkillEnumerator:TradeSkill()) do
+    for _, value in pairs(tradeSkill) do
         local reagent = value.reagent;
         local skill = value.skill;
         local recipe = value.recipe;
@@ -35,14 +34,6 @@ function TradeSkills:ScanTradeSkill()
     end
 
     Logger:Info("Scanned "..count.." reagents");
-end
-
-function TradeSkills:OnTradeSkillShow()
-    local retOk, error = pcall(TradeSkills.ScanTradeSkill)
-
-    if not retOk then
-        Logger.Error("Error: "..error);
-    end
 end
 
 function TradeSkills:ScanCraft()

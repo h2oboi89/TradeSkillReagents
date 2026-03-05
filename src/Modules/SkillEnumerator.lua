@@ -1,6 +1,8 @@
 local SkillEnumerator = TradeSkillReagentsModules:Create("SkillEnumerator");
 
+local BlizzApi = TradeSkillReagentsModules:Import("BlizzApi");
 local Logger = TradeSkillReagentsModules:Import("Logger");
+local Debug = TradeSkillReagentsModules:Import("Debug");
 
 -- means of enumerating recipes and reagents
 
@@ -10,32 +12,68 @@ end
 
 -- Enumerates all available recipes and reagents in the current tradeskill
 function SkillEnumerator:TradeSkill()
-    local tradeskillName, _, _, _ = GetTradeSkillLine()
-    Logger:Debug("tradeskill opened "..tradeskillName)
+    local tradeSkillLine = BlizzApi:GetTradeSkillLine();
+    if (not tradeSkillLine.success) then
+        return;
+    end
+    
+    local tradeskillName = tradeSkillLine.values[1];
+    Logger:Info("Scanning Trade Skill "..tradeskillName)
     
     local index = 0;
     local result = {};
     
-    local numSkills = GetNumTradeSkills();
-    Logger:Trace(" - Found "..numSkills.." skills")
-    for id=1, numSkills do
-        local skillName, skillType, _, _, _, _ = GetTradeSkillInfo(id);
-        if (skillName and IsCraftable(skillType)) then
-            local numReagents = GetTradeSkillNumReagents(id);
-            Logger:Trace(skillName.." "..numReagents.." with reagents")
-            for i=1, numReagents do
-                local reagentName, _, _, _ = GetTradeSkillReagentInfo(id, i);
-                Logger:Trace(" - "..reagentName)
+    local numTradeSkills = BlizzApi:GetNumTradeSkills();
 
-                result[index] = {
-                    reagent = reagentName,
-                    skill = tradeskillName,
-                    recipe = skillName,
-                }
-                index = index + 1;
+    if (not numTradeSkills.success) then
+        return result;
+    end
+
+    local numSkills = numTradeSkills.values[1];
+
+    Logger:Debug(" - Found "..numSkills.." skills")
+    for tradeSkillRecipeId = 1, numSkills do
+        local tradeSkillInfo = BlizzApi:GetTradeSkillInfo(tradeSkillRecipeId);
+
+        if (tradeSkillInfo.success) then
+            local skillName = tradeSkillInfo.values[1];
+            local skillType = tradeSkillInfo.values[2];
+            
+            if (skillName and IsCraftable(skillType)) then
                 
-                Logger:Trace(reagentName.." "..tradeskillName.." "..skillName)
+                local reagents = {}
+
+                local tradeSkillNumReagents = BlizzApi:GetTradeSkillNumReagents(tradeSkillRecipeId);
+                
+                if (tradeSkillNumReagents.success) then
+                    local numReagents = tradeSkillNumReagents.values[1];
+                    
+                    for reagentId = 1, numReagents do
+                        local tradeSkillReagentInfo = BlizzApi:GetTradeSkillReagentInfo(tradeSkillRecipeId, reagentId);
+
+                        if (tradeSkillReagentInfo.success) then
+                            local reagentName = tradeSkillReagentInfo.values[1];
+
+                            table.insert(reagents, reagentName);
+
+                            result[index] = {
+                                reagent = reagentName,
+                                skill = tradeskillName,
+                                recipe = skillName,
+                            }
+                            index = index + 1;
+                        else
+                            Logger:Error(tradeSkillReagentInfo.error);
+                        end
+                    end
+                else
+                    Logger:Error(tradeSkillNumReagents.error);
+                end
+
+                Logger:Trace(skillName.." : "..Debug:Print(reagents));
             end
+        else
+            Logger:Error(tradeSkillInfo.error);
         end
     end
 
