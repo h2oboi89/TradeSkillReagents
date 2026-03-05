@@ -23,7 +23,7 @@ function Debug:Dump(table)
     dump(table);
 end
 
-function Debug:Print(list)
+function Debug:ListToString(list)
     local result = "[ ";
 
     for i, v in ipairs(list) do

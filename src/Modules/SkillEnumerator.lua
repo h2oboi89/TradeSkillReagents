@@ -62,18 +62,12 @@ function SkillEnumerator:TradeSkill()
                                 recipe = skillName,
                             }
                             index = index + 1;
-                        else
-                            Logger:Error(tradeSkillReagentInfo.error);
                         end
                     end
-                else
-                    Logger:Error(tradeSkillNumReagents.error);
                 end
 
-                Logger:Trace(skillName.." : "..Debug:Print(reagents));
+                Logger:Trace(skillName.." : "..Debug:ListToString(reagents));
             end
-        else
-            Logger:Error(tradeSkillInfo.error);
         end
     end
 
