@@ -44,6 +44,8 @@ end
 
 function DataBase:SetReagentValue(reagent, skill, recipe)
     local reagentDb = DataBase.private.addon.db.global.reagents;
+    
+    Logger:Trace(reagent.." "..skill.." "..recipe);
 
     dictInsert(reagentDb, reagent, {});
     dictInsert(reagentDb[reagent], skill, {});

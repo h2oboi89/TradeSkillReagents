@@ -27,6 +27,5 @@ end
 function TradeSkillReagents:OnDisable()
     Logger:Debug("on disabled");
 
-    Query:DeInit();
     TradeSkills:DeInit();
 end
