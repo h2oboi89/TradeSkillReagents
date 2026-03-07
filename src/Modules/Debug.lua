@@ -5,18 +5,18 @@ local Logger = TradeSkillReagentsModules:Import("Logger");
 local function dump(t, indent)
     indent = indent or ""
     local currentIndent = indent;
-    Logger:Trace(currentIndent.."{");
+    Logger:Debug(currentIndent.."{");
     indent = indent .. "  ";
     for k, v in pairs(t) do
         local formatting = indent .. "[" .. tostring(k) .. "] = "
         if type(v) == "table" then
-            Logger:Trace(formatting)
+            Logger:Debug(formatting)
             dump(v, indent .. "  ") -- Recurse with increased indent
         else
-            Logger:Trace(formatting .. tostring(v))
+            Logger:Debug(formatting .. tostring(v))
         end
     end
-    Logger:Trace(currentIndent.."}");
+    Logger:Debug(currentIndent.."}");
 end
 
 function Debug:Dump(table)

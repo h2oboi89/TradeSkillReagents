@@ -24,7 +24,7 @@ function TradeSkills:OnTradeSkillShow()
     local tradeSkill = SkillEnumerator:TradeSkill();
 
     local count = 0;
-    for _, value in pairs(tradeSkill) do
+    for _, value in ipairs(tradeSkill) do
         local reagent = value.reagent;
         local skill = value.skill;
         local recipe = value.recipe;
@@ -41,7 +41,7 @@ function TradeSkills:ScanCraft()
     Logger:Info("Scanning Craft "..craftName)
 
     local count = 0;
-    for _, value in pairs(SkillEnumerator:Craft()) do
+    for _, value in ipairs(SkillEnumerator:Craft()) do
         local reagent = value.reagent;
         local skill = value.skill;
         local recipe = value.recipe;
