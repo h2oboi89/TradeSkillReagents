@@ -38,7 +38,6 @@ end
 
 function TradeSkills:ScanCraft()
     local craftName = GetCraftName();
-    Logger:Info("Scanning Craft "..craftName)
 
     local count = 0;
     for _, value in ipairs(SkillEnumerator:Craft()) do

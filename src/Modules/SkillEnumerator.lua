@@ -31,7 +31,7 @@ function SkillEnumerator:TradeSkill()
 
     local numSkills = numTradeSkills.values[1];
 
-    Logger:Debug(" - Found "..numSkills.." skills")
+    Logger:Debug(" - Found "..numSkills.." recipes")
     for tradeSkillRecipeId = 1, numSkills do
         local tradeSkillInfo = BlizzApi:GetTradeSkillInfo(tradeSkillRecipeId);
 
@@ -40,7 +40,6 @@ function SkillEnumerator:TradeSkill()
             local skillType = tradeSkillInfo.values[2];
             
             if (skillName and IsCraftable(skillType)) then
-                
                 local reagents = {}
 
                 local tradeSkillNumReagents = BlizzApi:GetTradeSkillNumReagents(tradeSkillRecipeId);
@@ -76,30 +75,61 @@ end
 
 -- Enumerates all available recipes and reagents in the current craft
 function SkillEnumerator:Craft()
-    local craftNameString = GetCraftName();
-    Logger:Debug("craft opened: "..craftNameString)
+    local craftName = BlizzApi:GetCraftName();
+    if (not craftName.success) then
+        return;
+    end
+    
+    local craftName = craftName.values[1];
+    Logger:Info("Scanning Craft "..craftName)
 
     local index = 0;
     local result = {};
-    local numCrafts = GetNumCrafts();
-    Logger:Trace(" - Found "..numCrafts.." crafts")
-    for id=1, numCrafts do
-        local craftName, craftSubSpellName, craftType, _, _, _, _ = GetCraftInfo(id);
-        if (craftName and IsCraftable(craftType)) then
-            local numReagents = GetCraftNumReagents(id);
-            Logger:Trace(craftName.." "..numReagents.." with reagents")
-            for i=1, numReagents do
-                local reagentName, _, _, _ = GetCraftReagentInfo(id, i);
-                Logger:Trace(" - "..reagentName)
+    
+    local numCrafts = BlizzApi:GetNumCrafts();
+
+    if (not numCrafts.success) then
+        return result;
+    end
+
+    local numSkills = numCrafts.values[1];
+
+    Logger:Debug(" - Found "..numSkills.." recipes")
+
+    for craftRecipeId = 1, numSkills do
+        local craftInfo = BlizzApi:GetCraftInfo(craftRecipeId);
+
+        if (craftInfo.success) then
+            local skillName = craftInfo.values[1];
+            local skillType = craftInfo.values[3];
+
+            if (skillName and IsCraftable(skillType)) then
+                local reagents = {}
+
+                local craftNumReagents = BlizzApi:GetCraftNumReagents(craftRecipeId);
                 
-                result[index] = {
-                    reagent = reagentName,
-                    skill = craftNameString,
-                    recipe = craftName,
-                }
-                index = index + 1;
-                
-                Logger:Trace(reagentName.." "..craftNameString.." "..craftName)
+                if (craftNumReagents.success) then
+                    local numReagents = craftNumReagents.values[1];
+
+                    for reagentId = 1, numReagents do
+                        local craftReagentInfo = BlizzApi:GetCraftReagentInfo(craftRecipeId, reagentId);
+
+                        if (craftReagentInfo.success) then
+                            local reagentName = craftReagentInfo.values[1];
+
+                            table.insert(reagents, reagentName);
+
+                            result[index] = {
+                                reagent = reagentName,
+                                skill = craftName,
+                                recipe = skillName,
+                            }
+                            index = index + 1;
+                        end
+                    end
+                end
+
+                Logger:Trace(skillName.." : "..Debug:ListToString(reagents));
             end
         end
     end

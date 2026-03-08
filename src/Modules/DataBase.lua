@@ -44,7 +44,27 @@ end
 
 function DataBase:SetReagentValue(reagent, skill, recipe)
     local reagentDb = DataBase.private.addon.db.global.reagents;
-    
+
+    local error = false;
+    if (reagent == nil) then
+        Logger:Error("reagent is nil");
+        error = true;
+    end
+
+    if (skill == nil) then
+        Logger:Error("skill is nil");
+        error = true;
+    end
+
+    if (recipe == nil) then
+        Logger:Error("recipe is nil");
+        erorr = true;
+    end
+
+    if (error) then 
+        return;
+    end
+
     Logger:Trace(reagent.." "..skill.." "..recipe);
 
     dictInsert(reagentDb, reagent, {});
