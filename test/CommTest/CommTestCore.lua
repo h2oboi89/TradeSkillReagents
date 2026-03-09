@@ -1,14 +1,17 @@
-CommTest = LibStub("AceAddon-3.0"):NewAddon("CommTest", "AceConsole-3.0",
+CommTest = LibStub("AceAddon-3.0"):NewAddon("CommTest", 
+                                            "AceConsole-3.0",
                                             "AceEvent-3.0")
 
 function CommTest:OnInitialize()
     -- Registers "/commtest" as a slash command
-    self:RegisterChatCommand("commtest", "QueryItem")
+    self:RegisterChatCommand("commtest", CommTest.QueryItem)
+    self:Print("commtest on init")
 end
 
 function CommTest:OnEnable()
     -- Registers response message from Trade Skill Reagents addon
-    self:RegisterMessage("TRADE_SKILL_REAGENTS_QUERY_RESPONSE")
+    self:RegisterMessage("TRADE_SKILL_REAGENTS_RESPONSE")
+    self:Print("commtest on enable")
 end
 
 -- Handles slash command and sends query to Trade Skills Reagents addon
@@ -22,25 +25,14 @@ end
 -- Response format:
 -- {
 --   itemName = <item name> -- same as what was sent in query
---   tradeSkills = {
---     <trade skill> = {    -- ie: Tailoring
---       <category> = #,    -- ie: Kul Tiran Patterns (# is scan flag)
---       ...                -- other categories if reagent is used in multiple categories
---     },
---     ...                  -- other trade skills if reagent is used in multiple trade skills
---   }
+--   tradeSkills = { ... }  -- list of trade skills names (IE: Tailoring)
 -- }
--- NOTE: "tradeSkills" may be nil if reagent is not in database. "categories" will always have a value if reagent is in database.
 function CommTest:TRADE_SKILL_REAGENTS_QUERY_RESPONSE(messageName, response)
     self:Print("Receiving " .. response.itemName)
 
     if response.tradeSkills then
-        for tradeSkill, categories in pairs(response.tradeSkills) do
+        for _, tradeSkill in ipairs(response.tradeSkills) do
             self:Print(" - " .. tradeSkill)
-
-            for _, category in ipairs(categories) do
-                self:Print("   - " .. category)
-            end
         end
     else
         self:Print("  No trade skill info")

@@ -1,5 +1,4 @@
-from distutils.dir_util import copy_tree
-from shutil import rmtree
+from shutil import rmtree, copytree
 import os
 import sys
 
@@ -31,7 +30,7 @@ def main(args):
 
     os.mkdir(dst_directory)
 
-    copy_tree(src_directory, dst_directory)
+    copytree(src_directory, dst_directory, dirs_exist_ok=True)
 
 
 if __name__ == "__main__":

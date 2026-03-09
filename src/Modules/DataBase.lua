@@ -8,10 +8,14 @@ local defaults = {
     }
 }
 
+-- addon database and means of interacting with it.
 function DataBase:Init(addon)
     DataBase.private.addon = addon;
 
     DataBase.private.addon.db = LibStub("AceDB-3.0"):New("TradeSkillReagentsDB", defaults, true)
+    if not DataBase.private.addon.db.global.logLevel then
+        DataBase:SetLogLevel(Logger.INFO);
+    end
 end
 
 function DataBase:GetLogLevel()
@@ -28,50 +32,40 @@ function dictInsert(dict, key, value)
     end
 end
 
-function valueInsert(dict, key)
-    if dict[key] == nil then
-        dict[key] = 0
-    end
-
-    dict[key] = dict[key] + 1
-end
-
-function valueShift(dict, key)
-    dict[key] = dict[key] * 2
-    dict[key] = dict[key] % 1024
-end
-
-function DataBase:ShiftReagentValues(skillName)
-    local reagentDb = DataBase.private.addon.db.global.reagents;
-    
-    for reagent, skillTable in pairs(reagentDb) do
-        for skill, recipeTable in pairs(skillTable) do
-            if (skill == skillName) then
-                for recipe, value in pairs(recipeTable) do
-                    valueShift(recipeTable, recipe);
-                    
-                    if (recipeTable[recipe] == 0) then
-                        Logger:Trace("setting "..recipe.." to nil")
-                        recipeTable[recipe] = nil
-                    end
-                end
-            end
-
-            if (next(skillTable[skill]) == nil) then
-                Logger:Trace("setting "..skill.." to nil")
-                skillTable[skill] = nil
-            end
-        end
-
-        if (next(reagentDb[reagent]) == nil) then
-            Logger:Trace("setting "..reagent.." to nil")
-            reagentDb[reagent] = nil
+function valueInsert(list, value)
+    for _, v in ipairs(list) do
+        if (v == value) then
+            return;
         end
     end
+
+    table.insert(list, value);
 end
 
 function DataBase:SetReagentValue(reagent, skill, recipe)
     local reagentDb = DataBase.private.addon.db.global.reagents;
+
+    local error = false;
+    if (reagent == nil) then
+        Logger:Error("reagent is nil");
+        error = true;
+    end
+
+    if (skill == nil) then
+        Logger:Error("skill is nil");
+        error = true;
+    end
+
+    if (recipe == nil) then
+        Logger:Error("recipe is nil");
+        erorr = true;
+    end
+
+    if (error) then 
+        return;
+    end
+
+    Logger:Trace(reagent.." "..skill.." "..recipe);
 
     dictInsert(reagentDb, reagent, {});
     dictInsert(reagentDb[reagent], skill, {});

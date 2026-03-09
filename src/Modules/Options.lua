@@ -40,6 +40,7 @@ local options = {
     },
 }
 
+-- Addon options
 function Options:Init()
     LibStub("AceConfig-3.0"):RegisterOptionsTable("TradeSkillReagents", options)
     LibStub("AceConfigDialog-3.0"):AddToBlizOptions("TradeSkillReagents", "Trade Skill Reagents")

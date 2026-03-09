@@ -9,6 +9,7 @@ Logger.ERROR = 4;
 Logger.FATAL = 5;
 Logger.OFF = 6;
 
+-- console logger
 function Logger:Init(addon)
     Logger.private.addon = addon;
 end
@@ -31,11 +32,16 @@ function Logger:Info(message)
     Logger:LogForLevel(message, Logger.INFO);
 end
 
+function Logger:Error(message)
+    Logger:LogForLevel(message, Logger.ERROR);
+end
+
 function Logger:GetLogLevels()
     return {
         [Logger.TRACE] = "TRACE",
         [Logger.DEBUG] = "DEBUG",
         [Logger.INFO] = "INFO",
+        [Logger.ERROR] = "ERROR",
         [Logger.OFF] = "OFF",
     };
 end

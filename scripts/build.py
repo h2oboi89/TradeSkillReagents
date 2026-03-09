@@ -1,4 +1,3 @@
-from distutils.dir_util import copy_tree
 import os
 import re
 import shutil
@@ -67,7 +66,7 @@ def main(args):
     libs = get_libs(src_directory)
 
     for lib in libs:
-        copy_tree(os.path.join(src_directory, lib), os.path.join(project_directory, lib))
+        shutil.copytree(os.path.join(src_directory, lib), os.path.join(project_directory, lib), dirs_exist_ok=True)
 
 if __name__ == '__main__':
     main(sys.argv)
