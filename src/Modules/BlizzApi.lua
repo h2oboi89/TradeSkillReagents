@@ -6,7 +6,7 @@ function BlizzApi:GetTradeSkillLine()
     local retOk, r1, r2, r3 = pcall(GetTradeSkillLine);
 
     if (not retOk) then
-        local error = r1;
+        local error = r1 or "unknown";
         Logger.Error("Error: "..error);
         return { success = false, values = {}, error = error };
     end
@@ -26,7 +26,7 @@ function BlizzApi:GetNumTradeSkills()
     local retOk, r1 = pcall(GetNumTradeSkills);
 
     if (not retOk) then
-        local error = r1;
+        local error = r1 or "unknown";
         Logger.Error("Error: "..error);
         return { success = false, values = {}, error = error };
     end
@@ -44,7 +44,7 @@ function BlizzApi:GetTradeSkillInfo(skillIndex)
     local retOk, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11 = pcall(GetTradeSkillInfo, skillIndex);
 
     if (not retOk) then
-        local error = r1;
+        local error = r1 or "unknown";
         Logger.Error("Error: "..error);
         return { success = false, values = {}, error = error };
     end
@@ -72,7 +72,7 @@ function BlizzApi:GetTradeSkillNumReagents(tradeSkillRecipeId)
     local retOk, r1 = pcall(GetTradeSkillNumReagents, tradeSkillRecipeId);
 
     if (not retOk) then
-        local error = r1;
+        local error = r1 or "unknown";
         Logger.Error("Error: "..error);
         return { success = false, values = {}, error = error };
     end
@@ -90,7 +90,7 @@ function BlizzApi:GetTradeSkillReagentInfo(tradeSkillRecipeId, reagentId)
     local retOk, r1, r2, r3, r4 = pcall(GetTradeSkillReagentInfo, tradeSkillRecipeId, reagentId);
 
     if (not retOk) then
-        local error = r1;
+        local error = r1 or "unknown";
         Logger.Error("Error: "..error);
         return { success = false, values = {}, error = error };
     end
@@ -111,7 +111,7 @@ function BlizzApi:GetCraftName()
     local retOk, r1 = pcall(GetCraftName);
 
     if (not retOk) then
-        local error = r1;
+        local error = r1 or "unknown";
         Logger.Error("Error: "..error);
         return { success = false, values = {}, error = error };
     end
@@ -129,7 +129,7 @@ function BlizzApi:GetNumCrafts()
     local retOk, r1 = pcall(GetNumCrafts);
 
     if (not retOk) then
-        local error = r1;
+        local error = r1 or "unknown";
         Logger.Error("Error: "..error);
         return { success = false, values = {}, error = error };
     end
@@ -147,7 +147,7 @@ function BlizzApi:GetCraftInfo(skillIndex)
     local retOk, r1, r2, r3, r4, r5, r6, r7 = pcall(GetCraftInfo, skillIndex);
 
     if (not retOk) then
-        local error = r1;
+        local error = r1 or "unknown";
         Logger.Error("Error: "..error);
         return { success = false, values = {}, error = error };
     end
@@ -171,7 +171,7 @@ function BlizzApi:GetCraftNumReagents(craftRecipeId)
     local retOk, r1 = pcall(GetCraftNumReagents, craftRecipeId);
 
     if (not retOk) then
-        local error = r1;
+        local error = r1 or "unknown";
         Logger.Error("Error: "..error);
         return { success = false, values = {}, error = error };
     end
@@ -189,7 +189,7 @@ function BlizzApi:GetCraftReagentInfo(craftRecipeId, reagentId)
     local retOk, r1, r2, r3, r4 = pcall(GetCraftReagentInfo, craftRecipeId, reagentId);
 
     if (not retOk) then
-        local error = r1;
+        local error = r1 or "unknown";
         Logger.Error("Error: "..error);
         return { success = false, values = {}, error = error };
     end

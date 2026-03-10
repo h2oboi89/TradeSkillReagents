@@ -53,14 +53,19 @@ function SkillEnumerator:TradeSkill()
                         if (tradeSkillReagentInfo.success) then
                             local reagentName = tradeSkillReagentInfo.values[1];
 
-                            table.insert(reagents, reagentName);
+                            if (reagentName == nil) then
+                                Logger.Error("reagent nil");
+                                -- Debug.Dump(tradeSkillReagentInfo);
+                            else
+                                table.insert(reagents, reagentName);
 
-                            result[index] = {
-                                reagent = reagentName,
-                                skill = tradeskillName,
-                                recipe = skillName,
-                            }
-                            index = index + 1;
+                                result[index] = {
+                                    reagent = reagentName,
+                                    skill = tradeskillName,
+                                    recipe = skillName,
+                                }
+                                index = index + 1;
+                            end
                         end
                     end
                 end
@@ -113,18 +118,23 @@ function SkillEnumerator:Craft()
 
                     for reagentId = 1, numReagents do
                         local craftReagentInfo = BlizzApi:GetCraftReagentInfo(craftRecipeId, reagentId);
-
+                        
                         if (craftReagentInfo.success) then
                             local reagentName = craftReagentInfo.values[1];
 
-                            table.insert(reagents, reagentName);
+                            if (reagentName == nil) then
+                                Logger.Error("reagent nil for "..craftRecipeId.." of "..numSkills.." reagent # "..reagentId.." of "..numReagents);
+                                Debug.Dump(craftReagentInfo);
+                            else
+                                table.insert(reagents, reagentName);
 
-                            result[index] = {
-                                reagent = reagentName,
-                                skill = craftName,
-                                recipe = skillName,
-                            }
-                            index = index + 1;
+                                result[index] = {
+                                    reagent = reagentName,
+                                    skill = craftName,
+                                    recipe = skillName,
+                                }
+                                index = index + 1;
+                            end
                         end
                     end
                 end
