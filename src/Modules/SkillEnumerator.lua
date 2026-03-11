@@ -113,7 +113,7 @@ function SkillEnumerator:Craft()
 
                     for reagentId = 1, numReagents do
                         local craftReagentInfo = BlizzApi:GetCraftReagentInfo(craftRecipeId, reagentId);
-                        
+
                         if (craftReagentInfo.success) then
                             local reagentName = craftReagentInfo.values[1];
 
