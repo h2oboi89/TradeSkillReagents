@@ -2,7 +2,7 @@ local BlizzApi = TradeSkillReagentsModules:Create("BlizzApi");
 
 local Logger = TradeSkillReagentsModules:Import("Logger");
 
-function checkListForNil(list)
+local function checkListForNil(list)
     for _, v in ipairs(list) do
         if v == nil then
             return false;
