@@ -6,7 +6,7 @@ local Debug = TradeSkillReagentsModules:Import("Debug");
 
 -- means of enumerating recipes and reagents
 
-function IsCraftable(skillType)
+local function IsCraftable(skillType)
     return skillType == "trivial" or skillType == "easy" or skillType == "medium" or skillType == "optimal" or skillType == "difficult";
 end
 
