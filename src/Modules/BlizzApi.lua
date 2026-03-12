@@ -50,11 +50,16 @@ function BlizzApi:GetNumTradeSkills()
 
     local numSkills = r1;
 
-    return {
-        success = true,
-        values = { numSkills },
+    local result = {
+        values = { },
         error = nil,
     };
+
+    table.insert(result.values, numSkills);
+
+    result.success = checkListForNil(result.values);
+
+    return result;
 end
 
 function BlizzApi:GetTradeSkillInfo(skillIndex)
@@ -111,11 +116,16 @@ function BlizzApi:GetTradeSkillNumReagents(tradeSkillRecipeId)
 
     local numReagents = r1;
 
-    return {
-        success = true,
-        values = { numReagents },
+    local result = {
+        values = { },
         error = nil,
     };
+
+    table.insert(result.values, numReagents);
+
+    result.success = checkListForNil(result.values);
+
+    return result;
 end
 
 function BlizzApi:GetTradeSkillReagentInfo(tradeSkillRecipeId, reagentId)
@@ -181,11 +191,16 @@ function BlizzApi:GetNumCrafts()
 
     local numSkills = r1;
 
-    return {
-        success = true,
-        values = { numSkills },
+    local result = {
+        values = { },
         error = nil,
     };
+
+    table.insert(result.values, numSkills);
+
+    result.success = checkListForNil(result.values);
+
+    return result;
 end
 
 function BlizzApi:GetCraftInfo(skillIndex)
@@ -234,11 +249,16 @@ function BlizzApi:GetCraftNumReagents(craftRecipeId)
 
     local numReagents = r1;
 
-    return {
-        success = true,
-        values = { numReagents },
+    local result = {
+        values = { },
         error = nil,
     };
+
+    table.insert(result.values, numReagents);
+
+    result.success = checkListForNil(result.values);
+
+    return result;
 end
 
 function BlizzApi:GetCraftReagentInfo(craftRecipeId, reagentId)
