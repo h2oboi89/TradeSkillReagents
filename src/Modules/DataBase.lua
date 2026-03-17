@@ -26,13 +26,13 @@ function DataBase:SetLogLevel(value)
     DataBase.private.addon.db.global.logLevel = value;
 end
 
-function dictInsert(dict, key, value)
+local function dictInsert(dict, key, value)
     if dict[key] == nil then 
         dict[key] = value
     end
 end
 
-function valueInsert(list, value)
+local function valueInsert(list, value)
     for _, v in ipairs(list) do
         if (v == value) then
             return;
