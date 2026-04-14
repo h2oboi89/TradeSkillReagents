@@ -1,5 +1,5 @@
 ## Interface: 11508
-## Title: Trade Skill Reagents |cFF00FF00 v4.1|r
+## Title: Trade Skill Reagents |cFF00FF00 v4.3|r
 ## Author: Hotel2Oscar
 ## Version: 4.3
 ## Notes: Shows which trade skills use the reagent in the tooltip
