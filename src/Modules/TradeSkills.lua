@@ -33,7 +33,7 @@ function TradeSkills:OnTradeSkillShow()
         count = count + 1;
     end
 
-    Logger:Info("Scanned "..count.." reagents");
+    Logger:Info("Found "..count.." reagents");
 end
 
 function TradeSkills:ScanCraft()
@@ -49,7 +49,7 @@ function TradeSkills:ScanCraft()
         count = count + 1;
     end
 
-    Logger:Info("Scanned "..count.." reagents");
+    Logger:Info("Found "..count.." reagents");
 end
 
 function TradeSkills:OnCraftShow()
